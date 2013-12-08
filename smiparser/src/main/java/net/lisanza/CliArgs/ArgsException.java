@@ -1,4 +1,5 @@
 package net.lisanza.CliArgs;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 /**
  * ArgsException which is handler for the CliArgs parser.

@@ -1,4 +1,5 @@
 package com.mod_snmp.Snmp.Protocol;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 /**
  * Session specific parameters for user based SNMP session.

@@ -1,7 +1,8 @@
+package com.mod_snmp.SmiParser.ErrorHandler;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * Message
  */
-package com.mod_snmp.SmiParser.ErrorHandler;
 import com.mod_snmp.SmiParser.Grammar.Token;
 import com.mod_snmp.SmiParser.SyntaxTree.Node;
 

@@ -1,8 +1,9 @@
+package com.mod_snmp.SmiTools.SmiBrowser.MenuBar;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * ActionMenu
  * The class that defines the module menu.
  */
-package com.mod_snmp.SmiTools.SmiBrowser.MenuBar;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;

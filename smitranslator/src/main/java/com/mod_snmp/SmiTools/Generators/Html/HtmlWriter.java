@@ -1,10 +1,11 @@
+package com.mod_snmp.SmiTools.Generators.Html;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * HtmlWriter
  * Extends PrintWriter with additional functions that
  * print out SmiGrammar elements.
  */
 
-package com.mod_snmp.SmiTools.Generators.Html;
 
 import com.mod_snmp.SmiParser.SyntaxTree.Identifier;
 import com.mod_snmp.SmiParser.SyntaxTree.ModuleIdentifier;

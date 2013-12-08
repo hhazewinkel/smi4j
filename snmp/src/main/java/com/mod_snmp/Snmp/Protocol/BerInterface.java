@@ -1,4 +1,5 @@
 package com.mod_snmp.Snmp.Protocol;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 /**
  * The BER interface defining the tags required for the encoding and

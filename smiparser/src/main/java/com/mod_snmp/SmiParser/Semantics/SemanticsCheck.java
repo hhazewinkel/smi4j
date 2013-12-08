@@ -1,10 +1,11 @@
+package com.mod_snmp.SmiParser.Semantics;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * SemanticsCheck
  * Class that walks thru the syntaxtree to do semantical checking.
  * Before this phase the semantics check needs to be setup.
  * The setup is mainly to insert all assignments in a symbol table.
  */
-package com.mod_snmp.SmiParser.Semantics;
 
 import com.mod_snmp.SmiParser.ErrorHandler.ErrorException;
 import com.mod_snmp.SmiParser.ErrorHandler.Message;

@@ -1,7 +1,8 @@
+package com.mod_snmp.SmiParser.ErrorHandler;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * RecoveryItem
  */
-package com.mod_snmp.SmiParser.ErrorHandler;
 
 public class RecoveryItem {
     private int look_ahead_one;

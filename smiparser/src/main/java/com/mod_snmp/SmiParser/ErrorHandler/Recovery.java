@@ -1,7 +1,8 @@
+package com.mod_snmp.SmiParser.ErrorHandler;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * Recovery
  */
-package com.mod_snmp.SmiParser.ErrorHandler;
 
 public class Recovery {
     private static final int default_stack_size = 70;

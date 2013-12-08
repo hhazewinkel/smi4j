@@ -1,4 +1,5 @@
 package com.mod_snmp.Snmp.Utils;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 import java.io.ByteArrayInputStream;
 
 public class InputMessage extends ByteArrayInputStream {

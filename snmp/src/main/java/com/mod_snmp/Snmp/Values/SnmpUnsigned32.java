@@ -1,5 +1,6 @@
-
 package com.mod_snmp.Snmp.Values;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
+
 
 public class SnmpUnsigned32 implements SnmpValue {
     private final static Long max = new Long("4294967295");

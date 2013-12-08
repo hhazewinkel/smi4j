@@ -1,9 +1,10 @@
+package com.mod_snmp.SmiParser.SyntaxTree;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * Identifier
  * Class implementation as factory class.
  * The TypeIdentifier, ValueIdentifier, KeywordIdentifier create the object instance.
  */
-package com.mod_snmp.SmiParser.SyntaxTree;
 
 /**
  * Grammar production:

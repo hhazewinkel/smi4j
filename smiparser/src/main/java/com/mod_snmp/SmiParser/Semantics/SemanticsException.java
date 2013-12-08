@@ -1,8 +1,9 @@
+package com.mod_snmp.SmiParser.Semantics;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * SemanticsException
  * Exception handler for the mibtree package.
  */
-package com.mod_snmp.SmiParser.Semantics;
 
 public class SemanticsException extends Exception {
     public SemanticsException() {

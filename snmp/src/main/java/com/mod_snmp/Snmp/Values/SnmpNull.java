@@ -1,9 +1,10 @@
+package com.mod_snmp.Snmp.Values;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * SnmpNull.java
  * A type handling the Exceptions.
  */
 
-package com.mod_snmp.Snmp.Values;
 
 public class SnmpNull implements SnmpValue {
     public static final int NO_SUCH_OBJECT = 0;

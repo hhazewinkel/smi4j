@@ -1,3 +1,5 @@
+package com.mod_snmp.SmiParser.MibTree;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * MibTreeNode
  * The class that represents the nodes of the MIB tree.
@@ -5,7 +7,6 @@
  * MIb module tree representation as well.
  */
 
-package com.mod_snmp.SmiParser.MibTree;
 
 import com.mod_snmp.SmiParser.SyntaxTree.Identifier;
 import com.mod_snmp.SmiParser.SyntaxTree.ObjectInfo;

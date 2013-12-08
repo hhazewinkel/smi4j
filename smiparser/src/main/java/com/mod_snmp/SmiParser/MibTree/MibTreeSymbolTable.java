@@ -1,3 +1,5 @@
+package com.mod_snmp.SmiParser.MibTree;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * MibTreeSymbolTable
  * Must be an overall (global/singleton pattern) hash table for MibTreeNode's.
@@ -5,7 +7,6 @@
  * This class generates MibTreeException belonging to the package.
  */
 
-package com.mod_snmp.SmiParser.MibTree;
 
 import com.mod_snmp.SmiParser.SyntaxTree.Identifier;
 

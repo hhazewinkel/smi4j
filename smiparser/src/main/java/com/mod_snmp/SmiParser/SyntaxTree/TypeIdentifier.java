@@ -1,8 +1,9 @@
+package com.mod_snmp.SmiParser.SyntaxTree;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * TypeIdentifier
  * Mediator class between the TypeSmi and the Identifier.
  */
-package com.mod_snmp.SmiParser.SyntaxTree;
 
 /**
  * Grammar production:

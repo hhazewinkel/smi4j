@@ -1,9 +1,10 @@
+package com.mod_snmp.SmiParser.SyntaxTree;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * ValueType
  * Class used to combine a ValueIdentifier with a Types.
  * Mostly used in a SEQUENCE definition.
  */
-package com.mod_snmp.SmiParser.SyntaxTree;
 
 /**
  * Grammar production:

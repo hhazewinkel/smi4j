@@ -1,4 +1,5 @@
 package com.mod_snmp.SmiTools.SmiBrowser.MenuBar;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 import com.mod_snmp.SmiTools.SmiBrowser.Common.RootFrame;
 import com.mod_snmp.SmiTools.SmiBrowser.SmiBrowser;

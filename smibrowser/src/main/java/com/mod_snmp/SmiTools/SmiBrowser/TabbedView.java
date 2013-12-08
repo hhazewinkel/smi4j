@@ -1,9 +1,10 @@
+package com.mod_snmp.SmiTools.SmiBrowser;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * TabbedView
  * The class that provides a tabular based information window of the tree view.
  */
 
-package com.mod_snmp.SmiTools.SmiBrowser;
 
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;

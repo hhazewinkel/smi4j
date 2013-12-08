@@ -1,4 +1,5 @@
 package com.mod_snmp.Snmp.Values;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 /**
  * The object composing a variable binding from an object identifier name 

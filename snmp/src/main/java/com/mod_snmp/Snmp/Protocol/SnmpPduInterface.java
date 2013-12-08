@@ -1,4 +1,5 @@
 package com.mod_snmp.Snmp.Protocol;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 /**
  * The SNMP PDU interface defining the pdu types and error status'

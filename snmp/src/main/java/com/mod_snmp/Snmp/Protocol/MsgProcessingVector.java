@@ -1,3 +1,5 @@
+package com.mod_snmp.Snmp.Protocol;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * MsgProcessingVector.java
  * The MsgProcessingVector class decodes and encodes a DatagramPacket
@@ -7,7 +9,6 @@
  * the packages.
  */
 
-package com.mod_snmp.Snmp.Protocol;
 
 import com.mod_snmp.Snmp.Utils.TypeConversions;
 

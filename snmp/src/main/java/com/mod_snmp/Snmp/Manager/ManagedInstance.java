@@ -1,4 +1,5 @@
 package com.mod_snmp.Snmp.Manager;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 import com.mod_snmp.Snmp.Values.SnmpCounter32;
 import com.mod_snmp.Snmp.Values.SnmpCounter64;

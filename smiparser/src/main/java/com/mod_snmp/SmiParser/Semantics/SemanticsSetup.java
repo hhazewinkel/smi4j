@@ -1,8 +1,9 @@
+package com.mod_snmp.SmiParser.Semantics;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * SemanticsSetup
  * Class that walks thru the syntaxtree to setup semantical checking.
  */
-package com.mod_snmp.SmiParser.Semantics;
 
 import com.mod_snmp.SmiParser.ErrorHandler.ErrorException;
 import com.mod_snmp.SmiParser.ErrorHandler.Message;

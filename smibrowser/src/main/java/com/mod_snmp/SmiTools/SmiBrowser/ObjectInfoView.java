@@ -1,9 +1,10 @@
+package com.mod_snmp.SmiTools.SmiBrowser;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * ObjectInfoView
  * The class that provides the detailed information of the
  * selected object of the tree view.
  */
-package com.mod_snmp.SmiTools.SmiBrowser;
 
 import com.mod_snmp.SmiParser.MibTree.MibTreeNode;
 import com.mod_snmp.SmiParser.SyntaxTree.ObjectInfo;

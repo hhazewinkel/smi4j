@@ -1,8 +1,9 @@
+package com.mod_snmp.SmiTools.SmiBrowser.MenuBar;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * FileMenu
  * The class that defines the file menu.
  */
-package com.mod_snmp.SmiTools.SmiBrowser.MenuBar;
 
 import com.mod_snmp.SmiParser.ErrorHandler.SmiException;
 import com.mod_snmp.SmiParser.Parser;

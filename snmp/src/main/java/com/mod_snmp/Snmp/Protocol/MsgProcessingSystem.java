@@ -1,10 +1,11 @@
+package com.mod_snmp.Snmp.Protocol;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * The MsgProcessingSystem class performs the decoding and encoding between
  * a DatagramPacket into an SnmpMessage.
  * It maintians an array for each version specific message processing model.
  */
 
-package com.mod_snmp.Snmp.Protocol;
 
 import com.mod_snmp.Snmp.Utils.TypeConversions;
 

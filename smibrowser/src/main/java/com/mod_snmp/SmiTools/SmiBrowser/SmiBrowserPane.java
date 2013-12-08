@@ -1,9 +1,10 @@
+package com.mod_snmp.SmiTools.SmiBrowser;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * SmiBrowserPane.java
  * The top-level window panel from which all view and gui interactions
  * are provided.
  */
-package com.mod_snmp.SmiTools.SmiBrowser;
 
 import javax.swing.JSplitPane;
 import javax.swing.event.TreeSelectionEvent;

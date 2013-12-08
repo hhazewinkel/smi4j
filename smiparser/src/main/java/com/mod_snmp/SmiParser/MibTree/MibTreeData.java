@@ -1,9 +1,10 @@
+package com.mod_snmp.SmiParser.MibTree;
+/* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * MibTreeData
  * The data declarations for the MIB tree nodes.
  */
 
-package com.mod_snmp.SmiParser.MibTree;
 
 public class MibTreeData {
     public static final int OBJECTIDENTIFIER = 0;
