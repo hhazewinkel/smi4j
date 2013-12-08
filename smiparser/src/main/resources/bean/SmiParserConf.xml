@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.4.0" class="java.beans.XMLDecoder">
+    <object class="com.mod_snmp.SmiParser.ParserConf">
+        <void property="mibDirectory">
+            <string>/usr/local/share/snmp/mibs</string>
+        </void>
+        <void property="mibModules">
+            <array class="java.lang.String" length="3">
+                <void index="0">
+                    <string>SNMPv2-SMI</string>
+                </void>
+                <void index="1">
+                    <string>SNMPv2-TC</string>
+                </void>
+                <void index="2">
+                    <string>SNMPv2-CONF</string>
+                </void>
+            </array>
+        </void>
+    </object>
+</java>

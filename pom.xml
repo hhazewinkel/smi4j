@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <name>SMI4J</name>
+    <description>SMI tools for Java</description>
+
+    <groupId>net.lisanza.smi4j</groupId>
+    <artifactId>smi4j</artifactId>
+    <version>1.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <properties>
+        <maven-release-plugin.version>2.4.1</maven-release-plugin.version>
+    </properties>
+
+    <modules>
+        <module>smiparser</module>
+        <module>smibrowser</module>
+        <module>smitranslator</module>
+        <module>snmp</module>
+    </modules>
+
+    <scm>
+        <url>https://hhazewinkel@github.com/hhazewinkel/smi4j.git</url>
+        <connection>scm:git:git://github.com/hhazewinkel/smi4j.git</connection>
+        <developerConnection>scm:git:git@github.com:hhazewinkel/smi4j.git</developerConnection>
+        <tag>v1.0.0</tag>
+    </scm>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Project modules dependencies -->
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>smiparser</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>smibrowser</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>smitranslator</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>${project.groupId}</groupId>
+                <artifactId>snmp</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>${maven-release-plugin.version}</version>
+                    <configuration>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                        <goals>install deploy</goals>
+                        <pushChanges>false</pushChanges>
+                        <localCheckout>true</localCheckout>
+                        <tagNameFormat>v@{project.version}</tagNameFormat>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>
