@@ -1,0 +1,27 @@
+<HTML>
+<HEAD>
+</HEAD>
+<BODY>
+The SNMP protocol stack.
+
+The package is the core of the SNMP protocol implementation and
+is used by the Snmp.Manager package. It is designed according the
+SNMP architecture framework as a multilingual SNMP protocol engine.
+
+<P>The protocol versions supported are:<BR>
+<LI>SNMP version 1</LI>
+<LI>SNMP version 2 community based (2C)</LI>
+<LI>SNMP version 3, only the security level, privacy, is not implemented</LI>
+</P>
+
+<P>The following security models are implemented:<BR>
+<LI>Community, used in SNMP version 1, 2C and 3.</LI>
+<LI>User based Security Model (USM) RFC XXXX</LI>
+</P>
+NOTE: The community based security model for SNMP version 3 
+	may be either model 1 or 2. However, it is probably
+	not supported by many SNMP agents and it is neither
+	an security replacement for the SNMP versions 1 and 2C.
+
+</BODY>
+</HTML>
