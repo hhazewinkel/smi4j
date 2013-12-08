@@ -1,0 +1,2571 @@
+/**
+ * SmiGrammar.jcc
+ * File containing the SMI grammar; generated from a grammar with JTB
+ * and then completely changed.
+ */
+
+PARSER_BEGIN(SmiGrammar)
+
+package com.mod_snmp.SmiParser.Grammar;
+
+import java.io.*;
+import java.util.*;
+import com.mod_snmp.SmiParser.SyntaxTree.*;
+import com.mod_snmp.SmiParser.ErrorHandler.*;
+
+
+public class SmiGrammar 
+{
+    public static void main(String args[]) throws ParseException
+    {
+        SmiGrammar parser;
+        parser = new SmiGrammar(System.in);
+        try {
+            parser.ModuleDefinitionList();
+            System.out.println("MIB file parsed successfully.");
+        } catch (ParseException e) {
+            System.out.println("MIB file failed to parse.");
+            System.out.println(e.toString());
+        }
+    }
+
+    /**  
+     * Dummy Token to be used if a Token is not initialized due
+     * to syntactical errors.
+     */
+    private NodeToken makeNodeToken(int ofKind, String str) {
+        return new NodeToken(str, ofKind, -1, -1, -1, -1);
+    }
+    private NodeToken makeNodeToken(int ofKind) {
+        return new NodeToken("", ofKind, -1, -1, -1, -1);
+    }
+    private NodeToken makeNodeToken(Token t) {
+        NodeToken node = new NodeToken(t.image.intern(), t.kind,
+                                                t.beginLine, t.beginColumn,
+                                                t.endLine, t.endColumn);
+        if ( t.specialToken == null ) {
+            return node;
+        }
+        Vector temp = new Vector();
+        Token orig = t;
+        while ( t.specialToken != null ) {
+            t = t.specialToken;
+            temp.addElement(new NodeToken(t.image.intern(), t.kind,
+                                                t.beginLine, t.beginColumn,
+                                                t.endLine, t.endColumn));
+        }
+        // Reverse the special token list
+        for ( int i = temp.size() - 1; i >= 0; --i ) {
+            node.addSpecial((NodeToken)temp.elementAt(i));
+        }
+        node.trimSpecials();
+        return node;
+    }
+
+    /**
+     * The recover function to skip items until a specified Token.
+     */
+    private boolean is_in_set(Token token, int set[]) {
+        return is_in_set(token.kind, set);
+    }
+    private boolean is_in_set(int kind, int set[]) {
+        for (int i = 0; i < set.length; i++) {
+            if (kind == set[i]) { 
+                return true;
+            }
+         }
+         return false;
+    }
+    private void recovery(int until[]) {
+        /* Get last correctly parsed Token. */
+        while (0 < until.length) {
+            Token t = getToken(1);
+            if (is_in_set(t.kind, until)) {
+                return;
+            }
+            t = getNextToken();
+        }
+    }
+    private void recovery(Recovery until) {
+        /* Get last correctly parsed Token. */
+        while (!until.empty()) {
+            if (until.contains(getToken(1).kind, getToken(2).kind)) {
+                return;
+            }
+            getNextToken();
+        }
+    }
+    private void skip(int nr) {
+        while (nr-- > 0) {
+            getNextToken();
+        }
+    } 
+
+    private void makeError(Token tok, String msg) {
+        if (tok.kind == TEXT_T) {
+            Message.error(tok.beginLine, "<quoted string: " + (tok.toString()).substring(0, 20) + "\"> " + msg);
+        } else {
+            Message.error(tok, tok.toString(), msg);
+        }
+    }
+    private void error(ParseException e) {
+        String expected = tokenImage[e.expectedTokenSequences[0][0]];
+        for (int i = 1; i < e.expectedTokenSequences.length; i++) {
+            expected += ", " + tokenImage[e.expectedTokenSequences[i][0]];   
+        }
+        error(e, expected);
+    }
+    private void error(ParseException e, String expected) {
+        makeError(e.currentToken.next, "after " + e.currentToken
+                                                        + " expected " + expected);
+    }
+
+    private void handleError(ParseException e, int next, String expected) {
+        handleError(e.currentToken.next, next, expected);
+    }
+    private void handleError(Token last, int next, String expected) {
+        if (last.next.kind == next) {
+            makeError(last.next, "missing " + expected);
+        } else {
+            makeError(last.next, "encountered expected " + expected);
+            getNextToken();
+        }
+    }
+    private void handleError(ParseException e, Recovery next, String clause, String expected) {
+        handleError(e.currentToken.next, next, clause, expected);
+    }
+    private void handleError(Token tok, Recovery next, String clause, String expected) {
+        if (next.contains(tok.kind)) {          
+            Message.error(tok.beginLine, clause + "-clause misses " + expected);       
+        } else {
+            Message.error(tok.beginLine, clause + "-clause encountered a " +
+                                ((tok.kind == TEXT_T) ? "<quoted string>" : tok.toString()) +
+                                " expected " + expected);    
+        }
+        recovery(next);
+    }
+    private void handleError(ParseException e, Recovery next, int clause, String expected) {
+        handleError(e.currentToken.next, next, clause, expected);
+    }
+    private void handleError(Token last, Recovery next, int clause, String expected) {
+        handleError(last, next, ((clause == TEXT_T) ? "<quoted string>" : tokenImage[clause]), expected);
+    }
+    private void handleError(ParseException e, Recovery next, String expected) {
+        handleError(e.currentToken.next, next, expected);
+    }
+    private void handleError(Token tok, Recovery next, String expected) {
+        if (next.contains(tok.kind)) {          
+            makeError(tok, "missing " + expected);       
+        } else {
+            makeError(tok, "encountered expected " + expected);    
+        }
+        recovery(next);
+    }
+}
+
+
+PARSER_END(SmiGrammar)
+
+SKIP : {
+    " "
+    | "\t"
+    | "\n"
+    | "\r"
+}
+
+SPECIAL_TOKEN : {
+    "--" : WithinComment
+}
+
+<WithinComment> SPECIAL_TOKEN : {
+    <("--" | "\n" | "\r" | "\r\n")> : DEFAULT
+}
+
+<WithinComment> MORE : {
+    <~[]>
+}
+
+TOKEN : {
+    <DEFINITIONS_T: "DEFINITIONS">
+    | <ASSIGN_T: "::=">
+    | <BEGIN_T: "BEGIN">
+    | <END_T: "END">
+    | <EXPORTS_T: "EXPORTS">
+    | <IMPORTS_T: "IMPORTS">
+    | <FROM_T: "FROM">
+    | <DOT_T: ".">
+    | <COMMA_T: ",">
+    | <LEFT_BRACE_T: "{">
+    | <RIGHT_BRACE_T: "}">
+    | <LEFT_PAREN_T: "(">
+    | <RIGHT_PAREN_T: ")">
+    | <LEFT_SQUARE_T: "[">
+    | <RIGHT_SQUARE_T: "]">
+    | <OR_T: "|">
+    | <SEMI_COLON_T: ";">
+    | <COLON_T: ":">
+    | <OBJECT_IDENTIFIER_T: "OBJECT" ([" ", "\n", "\t", "\r"])+ "IDENTIFIER">
+    | <OBJECT_TYPE_T: "OBJECT-TYPE">
+    | <OBJECT_IDENTITY_T: "OBJECT-IDENTITY">
+    | <OBJECT_GROUP_T: "OBJECT-GROUP">
+    | <TEXTUAL_CONVENTION_T: "TEXTUAL-CONVENTION">
+    | <NOTIFICATION_TYPE_T: "NOTIFICATION-TYPE">
+    | <NOTIFICATION_GROUP_T: "NOTIFICATION-GROUP">
+    | <MODULE_IDENTITY_T: "MODULE-IDENTITY">
+    | <MODULE_COMPLIANCE_T: "MODULE-COMPLIANCE">
+    | <AGENT_CAPABILITIES_T: "AGENT-CAPABILITIES">
+    | <TRAP_TYPE_T: "TRAP-TYPE">
+    | <LAST_UPDATED_T: "LAST-UPDATED">
+    | <ORGANIZATION_T: "ORGANIZATION">
+    | <CONTACT_INFO_T: "CONTACT-INFO">
+    | <DESCRIPTION_T: "DESCRIPTION">
+    | <REVISION_T: "REVISION">
+    | <PRODUCT_RELEASE_T: "PRODUCT-RELEASE">
+    | <MODULE_T: "MODULE">
+    | <MANDATORY_GROUPS_T: "MANDATORY-GROUPS">
+    | <GROUP_T: "GROUP">
+    | <SUPPORTS_T: "SUPPORTS">
+    | <INCLUDE_T: "INCLUDE">
+    | <VARIATION_T: "VARIATION">
+    | <CREATION_REQUIRES_T: "CREATION-REQUIRES">
+    | <NOTIFICATIONS_T: "NOTIFICATIONS">
+    | <REFERENCE_T: "REFERENCE">
+    | <SYNTAX_T: "SYNTAX">
+    | <WRITE_SYNTAX_T: "WRITE-SYNTAX">
+    | <UNITS_T: "UNITS">
+    | <INDEX_T: "INDEX">
+    | <IMPLIED_T: "IMPLIED">
+    | <AUGMENTS_T: "AUGMENTS">
+    | <DEFVAL_T: "DEFVAL">
+    | <OBJECT_T: "OBJECT">
+    | <OBJECTS_T: "OBJECTS">
+    | <DISPLAY_HINT_T: "DISPLAY-HINT">
+    | <INCLUDES_T: "INCLUDES">
+    | <ENTERPRISE_T: "ENTERPRISE">
+    | <VARIABLES_T: "VARIABLES">
+    | <STATUS_T: "STATUS">
+    | <CURRENT_T: "current">
+    | <DEPRECATED_T: "deprecated">
+    | <OBSOLETE_T: "obsolete">
+    | <MANDATORY_T: "mandatory">
+    | <ACCESS_T: "ACCESS">
+    | <MAX_ACCESS_T: "MAX-ACCESS">
+    | <MIN_ACCESS_T: "MIN-ACCESS">
+    | <NOT_ACCESSIBLE_T: "not-accessible">
+    | <ACCESSIBLE_FOR_NOTIFY_T: "accessible-for-notify">
+    | <READ_ONLY_T: "read-only">
+    | <READ_WRITE_T: "read-write">
+    | <READ_CREATE_T: "read-create">
+    | <WRITE_ONLY_T: "write-only">
+    | <NOT_IMPLEMENTED_T: "not-implemented">
+    | <INTEGER_T: "INTEGER">
+    | <BITS_T: "BITS">
+    | <BIT_STRING_T: "BIT" ([" ", "\n", "\t", "\r"])+ "STRING">
+    | <OCTET_STRING_T: "OCTET" ([" ", "\n", "\t", "\r"])+ "STRING">
+    | <SEQUENCE_OF_T: "SEQUENCE" ([" ", "\n", "\t", "\r"])+ "OF">
+    | <SEQUENCE_T: "SEQUENCE">
+    | <COUNTER32_T: "Counter32">
+    | <COUNTER_T: "Counter">
+    | <GAUGE32_T: "Gauge32">
+    | <GAUGE_T: "Gauge">
+    | <TIMETICKS_T: "TimeTicks">
+    | <OPAQUE_T: "Opaque">
+    | <IP_ADDRESS_T: "IpAddress">
+    | <NETWORK_ADDRESS_T: "NetworkAddress">
+    | <NSAP_ADDRESS_T: "NSapAddress">
+    | <COUNTER64_T: "Counter64">
+    | <UNSIGNED32_T: "Unsigned32">
+    | <UINTEGER32_T: "UInteger32">
+    | <INTEGER32_T: "Integer32">
+    | <INDEX_SYNTAX_T: "IndexSyntax">
+    | <APPLICATION_SYNTAX_T: "ApplicationSyntax">
+    | <OBJECT_SYNTAX_T: "ObjectSyntax">
+    | <SIMPLE_SYNTAX_T: "SimpleSyntax">
+    | <SIZE_T: "SIZE">
+    | <UNTIL_T: "..">
+    | <MACRO_T: "MACRO">
+    | <CHOICE_T: "CHOICE">
+    | <APPLICATION_T: "APPLICATION">
+    | <UNIVERSAL_T: "UNIVERSAL">
+    | <PRIVATE_T: "PRIVATE">
+    | <EXPLICIT_T: "EXPLICIT">
+    | <IMPLICIT_T: "IMPLICIT">
+    | <BIN_NUMBER_T: "\'" (["0"-"1"]["0"-"1"]["0"-"1"]["0"-"1"]["0"-"1"]["0"-"1"]["0"-"1"]["0"-"1"])* ("\'B" | "\'b")>
+    | <HEX_NUMBER_T: "\'" (["0"-"9", "A"-"F", "a"-"f"]["0"-"9", "A"-"F", "a"-"f"])* ("\'H" | "\'h")>
+    | <DEC_NUMBER_T: "0" | ["1"-"9"] (["0"-"9"])* | "-" ["1"-"9"] (["0"-"9"])*>
+    | <UTC_TIME_T: "\"" (["0"-"9"])* "Z\"">
+    | <TEXT_T: "\"" (~["\""])* "\"">
+    | <VALUE_IDENTIFIER_T: ["a"-"z"] (("-" ["a"-"z", "A"-"Z", "0"-"9"]) | ["a"-"z", "A"-"Z", "0"-"9"])*>
+    | <TYPE_IDENTIFIER_T: ["A"-"Z"] (("-" ["a"-"z", "A"-"Z", "0"-"9"]) | ["a"-"z", "A"-"Z", "0"-"9"])*>
+}
+
+NodeList ModuleDefinitionList() : {
+    NodeList module_list = new NodeList();
+    ModuleDefinition module;
+}
+{
+    (
+        module=ModuleDefinition()
+        { module_list.addNode(module); }
+    )*
+    { module_list.nodes.trimToSize(); }
+    { return module_list; }
+}
+
+ModuleDefinition ModuleDefinition() : {
+    ModuleIdentifier module_id = null;
+    Token definitions_t;
+    Token assign_t;
+    Token begin_t;
+    Token var10;
+    NodeList exp_symbols = new NodeList();
+    Token var13;
+    Token var17;
+    NodeList imports_mod_list = new NodeList();
+    ModuleImport imports_symbols;
+    Token var21;
+    NodeList var22 = new NodeList();
+    Assignment var24;
+    Token var36;
+    Recovery next = new Recovery();
+    int next_type[] = { ASSIGN_T };
+    int next_value[] = { OBJECT_IDENTIFIER_T, OBJECT_TYPE_T,
+                                 OBJECT_IDENTITY_T, OBJECT_GROUP_T,
+                                 NOTIFICATION_TYPE_T, NOTIFICATION_GROUP_T,
+                                 MODULE_IDENTITY_T, MODULE_COMPLIANCE_T,
+                                 AGENT_CAPABILITIES_T, TRAP_TYPE_T };
+    int next_macro[] = { MACRO_T };
+    int next_assign[] = { ASSIGN_T };
+}   
+{   
+    try {
+        module_id=ModuleIdentifier()
+        definitions_t=<DEFINITIONS_T>
+        {
+            next.push(END_T);
+            next.push(new RecoveryItem(TYPE_IDENTIFIER_T, next_type));
+            next.push(new RecoveryItem(INDEX_SYNTAX_T, next_type));
+            next.push(new RecoveryItem(APPLICATION_SYNTAX_T, next_type));
+            next.push(new RecoveryItem(OBJECT_SYNTAX_T, next_type));
+            next.push(new RecoveryItem(SIMPLE_SYNTAX_T, next_type));
+            next.push(new RecoveryItem(VALUE_IDENTIFIER_T, next_value));
+            next.push(new RecoveryItem(OBJECT_TYPE_T, next_macro));
+            next.push(new RecoveryItem(OBJECT_IDENTITY_T, next_macro));
+            next.push(new RecoveryItem(OBJECT_GROUP_T, next_macro));
+            next.push(new RecoveryItem(TEXTUAL_CONVENTION_T, next_macro));
+            next.push(new RecoveryItem(NOTIFICATION_TYPE_T, next_macro));
+            next.push(new RecoveryItem(NOTIFICATION_GROUP_T, next_macro));
+            next.push(new RecoveryItem(MODULE_IDENTITY_T, next_macro));
+            next.push(new RecoveryItem(MODULE_COMPLIANCE_T, next_macro));
+            next.push(new RecoveryItem(AGENT_CAPABILITIES_T, next_macro));
+            next.push(new RecoveryItem(TRAP_TYPE_T, next_macro));
+            next.push(new RecoveryItem(IP_ADDRESS_T, next_assign));
+            next.push(new RecoveryItem(NETWORK_ADDRESS_T, next_assign));
+            next.push(new RecoveryItem(COUNTER_T, next_assign));
+            next.push(new RecoveryItem(COUNTER32_T, next_assign));
+            next.push(new RecoveryItem(COUNTER64_T, next_assign));
+            next.push(new RecoveryItem(GAUGE_T, next_assign));
+            next.push(new RecoveryItem(GAUGE32_T, next_assign));
+            next.push(new RecoveryItem(TIMETICKS_T, next_assign));
+            next.push(new RecoveryItem(OPAQUE_T, next_assign));
+            next.push(new RecoveryItem(INTEGER32_T, next_assign));
+            next.push(new RecoveryItem(UINTEGER32_T, next_assign));
+            next.push(new RecoveryItem(UNSIGNED32_T, next_assign));
+            next.push(IMPORTS_T);
+            next.push(EXPORTS_T);
+            next.push(BEGIN_T);
+        }
+        AssignSymbol(next)
+        {
+            next.pop(); /* BEGIN_T */
+        }
+        begin_t=<BEGIN_T>
+        {
+            next.pop(); /* EXPORTS_T */
+        }
+        (
+            var10=<EXPORTS_T>
+            exp_symbols=ModuleExport(exp_symbols)
+            var13=<SEMI_COLON_T>
+            { exp_symbols.nodes.trimToSize(); }
+        )?
+        {
+            next.pop(); /* IMPORTS_T */
+        }
+        (
+            var17=<IMPORTS_T>
+            { next.push(SEMI_COLON_T); }
+            (
+                try {
+                    imports_symbols=ModuleImport(next)
+                    { imports_mod_list.addNode(imports_symbols); }
+                } catch (ParseException e) {
+                    if (e.currentToken.kind == FROM_T) {
+                        makeError(e.currentToken, "incorrect module name");
+                    }
+                    if (e.currentToken.kind != SEMI_COLON_T) {
+                        getNextToken();
+                    }
+                }
+            )*
+            {
+                imports_mod_list.nodes.trimToSize();
+                next.pop(); /* SEMI_COLON_T */
+            }
+            var21=<SEMI_COLON_T>
+        )?
+        (
+            var24=Assignment(next)
+            {
+                var22.addNode(var24);
+                /* We do a recovery, making sure we see a next Assignment. */
+                recovery(next);
+            }
+        )*
+        { var22.nodes.trimToSize(); }
+        var36=<END_T>
+    } catch (ParseException e) {
+        makeError(e.currentToken,
+                        "error in module " + ((module_id != null) ? module_id.toString() : ""));
+        recovery(next);
+    }
+    { return new ModuleDefinition(module_id,
+                            exp_symbols,
+                            imports_mod_list,
+                            var22); }
+}
+
+JAVACODE
+NodeList ModuleExport(NodeList exports)
+{
+    Token tok;
+    while ( true ) {
+        tok = getToken(1);
+        if ((tok.kind == SEMI_COLON_T) && (tok.kind == IMPORTS_T)) {
+            break;
+        }
+        if (tok.kind != COMMA_T) {
+            exports.addNode(makeNodeToken(tok));
+        }
+        tok = getNextToken();
+    }
+    return exports;
+}
+
+ModuleImport ModuleImport(Recovery next) : {
+    NodeList symbol_list = new NodeList();
+    Identifier symbol;
+    Token comma_t;
+    Token from_t;
+    ModuleIdentifier module_id;
+}
+{
+    { next.push(FROM_T); }
+    { next.push(COMMA_T); }
+    try {
+        symbol=Symbol()
+        { symbol_list.addNode(symbol); }
+    } catch (ParseException e) {
+        makeError(e.currentToken, "expected <symbol>");
+        recovery(next);
+    }
+    (
+        try {
+            comma_t=<COMMA_T>
+            symbol=Symbol()
+            { symbol_list.addNode(symbol); }
+        } catch (ParseException e) {
+            if (e.currentToken.kind == COMMA_T) {
+                makeError(e.currentToken, "encountered expected <symbol>");
+                recovery(next);
+            } else {
+                handleError(e, next, "<symbol>");
+            }
+        }
+    )*
+    { symbol_list.nodes.trimToSize(); }
+    { next.pop(); /* COMMA_T */ }
+    { next.push(TYPE_IDENTIFIER_T); }
+    try {
+        from_t=<FROM_T>
+    } catch (ParseException e) {
+        makeError(e.currentToken, "expected 'FROM'");
+        recovery(next);
+        if (getToken(0).kind == FROM_T) {
+            getNextToken();
+        }
+    } finally {
+        next.pop(); /* FROM_T */
+        next.pop(); /* TYPE_IDENTIFIER_T */
+    }
+    module_id=ModuleIdentifier()
+    { return new ModuleImport(symbol_list,
+                            module_id); }
+}
+
+Identifier Symbol() : {
+    Identifier identifier;
+}
+{
+    (
+        LOOKAHEAD(3)
+        identifier=TypeIdentifier()
+    |
+        LOOKAHEAD(3)
+        identifier=ValueIdentifier()
+    |
+        identifier=TypeIdentifierException()
+    |
+        identifier=SmiTypes()
+    |
+        identifier=PredefinedMacro()
+    )
+    { return identifier; }
+}
+
+Identifier PredefinedMacro() : {
+    Token var;
+}
+{
+    (
+        var=<OBJECT_TYPE_T>        
+    |
+        var=<OBJECT_IDENTITY_T>        
+    |
+        var=<OBJECT_GROUP_T>        
+    |
+        var=<TEXTUAL_CONVENTION_T>        
+    |
+        var=<NOTIFICATION_TYPE_T>        
+    |
+        var=<NOTIFICATION_GROUP_T>        
+    |
+        var=<MODULE_IDENTITY_T>        
+    |
+        var=<MODULE_COMPLIANCE_T>        
+    |
+        var=<AGENT_CAPABILITIES_T>        
+    |
+        var=<TRAP_TYPE_T>        
+    )
+    { return Identifier.Keyword(makeNodeToken(var)); }
+}
+
+Identifier SmiTypes() : {
+    Token var;
+}
+{
+    (
+        var=<IP_ADDRESS_T>        
+    |
+        var=<NETWORK_ADDRESS_T>        
+    |
+        var=<NSAP_ADDRESS_T>        
+    |
+        var=<COUNTER_T>        
+    |
+        var=<COUNTER32_T>        
+    |
+        var=<COUNTER64_T>        
+    |
+        var=<GAUGE_T>        
+    |
+        var=<GAUGE32_T>        
+    |
+        var=<TIMETICKS_T>        
+    |
+        var=<OPAQUE_T>        
+    |
+        var=<INTEGER32_T>        
+    |
+        var=<UINTEGER32_T>        
+    |
+        var=<UNSIGNED32_T>        
+    )
+    { return Identifier.Keyword(makeNodeToken(var)); }
+}
+
+Assignment Assignment(Recovery next) : {
+    Assignment assignment = null;
+    Identifier identifier = null;
+    Type type;
+    MacroBody macro_body;
+    Token begin_t;
+    Token syntax_t;
+    Token end_t;
+    Token type_t;
+    TypeTag typeTag;
+    NodeList variables;
+    EnterprisePart enterprise;
+    DescriptionPart description;
+    NumericValue number;
+    NodeList vtList;
+    ObjectInfo object_info;
+    Token assign_t;
+    AssignedValue assigned_value;
+}
+{
+    (
+        LOOKAHEAD(2)
+        identifier=TypeIdentifier()
+        AssignSymbol(new Recovery())
+        type=TypeDefinition(next)
+        {
+            assignment = new AssignmentType(identifier,
+                        type);
+        }
+            
+    |
+        LOOKAHEAD(2)
+        identifier=ValueIdentifier()
+        {
+            next.push(ASSIGN_T);
+        }
+        try {
+            object_info=ObjectDefinition(next)
+        } catch (ParseException e) {
+            object_info = new ObjectInfoObjectIdentifier();
+            makeError(e.currentToken, "encountered in assignment '" + identifier + "'");
+            recovery(next);
+        } finally {
+            /* Setup for continuation */
+            next.pop(); /* ASSIGN_T */
+            next.push(LEFT_BRACE_T);
+        }
+        AssignSymbol(next)
+        {
+            next.pop(); /* LEFT_BRACE_T */
+        }
+        assigned_value=AssignedValue()
+        { assignment = new AssignmentObject(identifier,
+                            object_info,
+                            assigned_value); }
+    |
+        LOOKAHEAD(3)
+        identifier=SmiTypes() /* Could grammaticaly TypeIdentifier(). */
+        {
+            next.push(INTEGER_T);
+            next.push(BIT_STRING_T);
+            next.push(OCTET_STRING_T);
+            next.push(OBJECT_IDENTIFIER_T);
+            next.push(LEFT_SQUARE_T);
+        }
+        AssignSymbol(next)
+        {
+            next.pop(); /* LEFT_SQUARE_T */
+        }
+        typeTag=TypeTag(next)
+        {
+            if (!next.contains(getToken(1).kind)) {
+                recovery(next);
+            }
+            next.pop(4); /* OBJECT_IDENTIFIER_T, OCTET_STRING_T, BIT_STRING_T, INTEGER_T */
+        }
+        type=Asn1Types()
+        {
+            typeTag.setType((TypeSmi)type);
+            assignment = new AssignmentType(identifier,
+                                        typeTag);
+        }
+    |
+        LOOKAHEAD(3)
+        (
+            identifier=SmiTypes() /* Could grammaticaly TypeIdentifier(). */
+        |
+            identifier=TypeIdentifierException()
+        )
+        {
+            next.push(CHOICE_T);
+        }
+        AssignSymbol(next)
+        {
+            next.pop(); /* CHOICE_T */
+        }
+        type_t=<CHOICE_T>
+        vtList=BracedValueTypeList()
+        {
+            assignment = new AssignmentType(identifier,
+                                        new TypeChoice(vtList));
+        }
+    |
+        identifier=PredefinedMacro() /* Is actually a TypeIdentifier() */
+        type_t=<MACRO_T>
+        {
+            next.push(BEGIN_T);
+        }
+        AssignSymbol(next)
+        {
+            next.pop(); /* BEGIN_T */
+        }
+        begin_t=<BEGIN_T>
+        macro_body=MacroBody()
+        end_t=<END_T>
+        {
+            assignment = new AssignmentMacro(identifier,
+                                        macro_body);
+        }
+    |
+        /* Only added for SMIv1 support. */
+        LOOKAHEAD(2)
+        identifier=ValueIdentifier()
+        type_t=<TRAP_TYPE_T>
+        {
+            next.push(ASSIGN_T);
+            next.push(DESCRIPTION_T);
+            next.push(VARIABLES_T);
+        }
+        enterprise=EnterprisePart(next)
+        {
+            next.pop(); /* VARIABLES_T */
+        }
+        variables=VariablesPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* ASSIGN_T */
+        }
+        {
+            next.push(DEC_NUMBER_T);
+            next.push(BIN_NUMBER_T);
+            next.push(HEX_NUMBER_T);
+            next.push(VALUE_IDENTIFIER_T);
+            next.push(TYPE_IDENTIFIER_T);
+        }
+        AssignSymbol(next)
+        {
+            next.pop(3); /* DEC_NUMBER_T, BIN_NUMBER_T, HEX_NUMBER_T */
+        }
+        number=NumericValue()
+        { 
+            next.pop(2); /* VALUE_IDENTIFIER_T, TYPE_IDENTIFIER_T */
+            assignment = new AssignmentObject(identifier,
+                        new ObjectInfoTrapType(enterprise,
+                                        variables,
+                                        description,
+                                        number),
+                        number);
+        }
+    )
+    {
+        return assignment;
+    }
+}
+
+/**
+ * TypeDefinition()
+ * Returns a allowed type definition of a MIB module.
+ * There are 3 kinds of TypeDefinitions.
+ * 1) derived_type ::= basic_type
+ *    Only allowed for SMIv1.
+ * 2) derived_type ::= textual convention
+ *    Only allowed for SMIv2.
+ * 3) derived-type ::= sequence
+ *    Needed to define the row of a table.
+ */
+Type TypeDefinition(Recovery next) : {
+    Type type;
+    DisplayHintPart displayhint;
+    SyntaxPart syntax;
+    StatusPart status;
+    DescriptionPart description;
+    ReferencePart reference;
+    Token type_t;
+    NodeList vtList;
+}
+{
+    (
+        /* Only added for SMIv1 support. */
+        type=Types()
+    |
+        type_t=<TEXTUAL_CONVENTION_T>
+        {
+            next.push(SYNTAX_T);
+            next.push(REFERENCE_T);
+            next.push(DESCRIPTION_T);
+            next.push(STATUS_T);
+        }
+        displayhint=DisplayHintPart(next)
+        {
+            next.pop(); /* STATUS_T */
+        }
+        status=StatusPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* REFERENCE_T */
+        }
+        reference=ReferencePart(next)
+        {
+            next.pop(); /* SYNTAX_T */
+        }
+        syntax=SyntaxPart(next)
+        {
+            type = new TypeTextualConvention(displayhint,
+                            status,
+                            description,
+                            reference,
+                            syntax);
+        }
+    |
+        type_t=<SEQUENCE_T>
+        vtList=BracedValueTypeList()
+        { type = new TypeSequence(vtList); }
+    )
+    { return type; }
+}
+
+ObjectInfo ObjectDefinition(Recovery next) : {
+    Type type;
+    Token sort_t;
+    ContactInfoPart contactinfo;
+    NodeList revision;
+    OrganizationPart organization;
+    SyntaxPart syntax;
+    UnitsPart units;
+    AccessPart access;
+    StatusPart status;
+    DescriptionPart description;
+    ReferencePart reference;
+    IndexPart index;
+    DefValPart defval;
+    NodeList objects;
+    NodeList notification;
+    NodeList modulecapabilities;
+    NodeList modulecompliance;
+    ProductReleasePart productrelease;
+    LastUpdatedPart lastupdated;
+    NumericValue number;
+    Token type_t;
+    ObjectInfo object_info;
+    AssignedValue assigned_value;
+}
+{
+    (
+        sort_t=<OBJECT_IDENTIFIER_T>
+        {
+            object_info = new ObjectInfoObjectIdentifier();
+        }
+    |
+        sort_t=<OBJECT_TYPE_T>
+        {
+            next.push(DEFVAL_T);
+            next.push(INDEX_T);
+            next.push(REFERENCE_T);
+            next.push(DESCRIPTION_T);
+            next.push(STATUS_T);
+            next.push(MAX_ACCESS_T);
+            next.push(UNITS_T);
+        }
+        syntax=SyntaxPart(next)
+        {
+            next.pop(); /* UNITS_T */
+        }
+        units=UnitsPart(next)
+        {
+            next.pop(); /* MAX_ACCESS_T */
+            next.contains(-1);
+        }
+        access=AccessPart(MAX_ACCESS_T, next)
+        {
+            next.pop(); /* STATUS_T */
+        }
+        status=StatusPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* REFERENCE_T */
+        }
+        reference=ReferencePart(next)
+        {
+            next.pop(); /* INDEX_T */
+        }
+        index=IndexPart(next)
+        {
+            next.pop(); /* DEFVAL_T */
+        }
+        defval=DefValPart(next)
+        {
+            object_info = new ObjectInfoObjectType(syntax,
+                                            units,
+                                            access,
+                                            status,
+                                            description,
+                                            reference,
+                                            index,
+                                            defval);
+        }
+    |
+        sort_t=<MODULE_IDENTITY_T>
+        {
+            next.push(REVISION_T);
+            next.push(DESCRIPTION_T);
+            next.push(CONTACT_INFO_T);
+            next.push(ORGANIZATION_T);
+        }
+        lastupdated=LastUpdatedPart(next)
+        {
+            next.pop(); /* ORGANIZATION_T */
+        }
+        organization=OrganizationPart(next)
+        {
+            next.pop(); /* CONTACT_INFO_T */
+        }
+        contactinfo=ContactInfoPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* REVISION_T */
+        }
+        revision=RevisionPart(next)
+        {
+            object_info = new ObjectInfoModuleIdentity(lastupdated,
+                                            organization,
+                                            contactinfo,
+                                            description,
+                                            revision);
+        }
+    |
+        sort_t=<OBJECT_IDENTITY_T>
+        {
+            next.push(REFERENCE_T);
+            next.push(DESCRIPTION_T);
+        }
+        status=StatusPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* REFERENCE_T */
+        }
+        reference=ReferencePart(next)
+        {
+            object_info = new ObjectInfoObjectIdentity(status,
+                                            description,
+                                            reference);
+        }
+    |
+        sort_t=<OBJECT_GROUP_T>
+        {
+            next.push(REFERENCE_T);
+            next.push(DESCRIPTION_T);
+            next.push(STATUS_T);
+        }
+        objects=ObjectsPart(false, next) /* ObjectsPart is required */
+        {
+            next.pop(); /* STATUS_T */
+        }
+        status=StatusPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* REFERENCE_T */
+        }
+        reference=ReferencePart(next)
+        {
+            object_info = new ObjectInfoObjectGroup(objects,
+                                            status,
+                                            description,
+                                            reference);
+        }
+    |
+        sort_t=<NOTIFICATION_TYPE_T>
+        {
+            next.push(REFERENCE_T);
+            next.push(DESCRIPTION_T);
+            next.push(STATUS_T);
+        }
+        objects=ObjectsPart(true, next) /* ObjectsPart is optional */
+        {
+            next.pop(); /* STATUS_T */
+        }
+        status=StatusPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* REFERENCE_T */
+        }
+        reference=ReferencePart(next)
+        {
+            object_info = new ObjectInfoNotificationType(objects,
+                                            status,
+                                            description,
+                                            reference);
+        }
+    |
+        sort_t=<NOTIFICATION_GROUP_T>
+        {
+            next.push(REFERENCE_T);
+            next.push(DESCRIPTION_T);
+            next.push(STATUS_T);
+        }
+        notification=NotificationPart(next)
+        {
+            next.pop(); /* STATUS_T */
+        }
+        status=StatusPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* REFERENCE_T */
+        }
+        reference=ReferencePart(next)
+        {
+            object_info = new ObjectInfoNotificationGroup(notification,
+                                            status,
+                                            description,
+                                            reference);
+        }
+    |
+
+        sort_t=<MODULE_COMPLIANCE_T>
+        {
+            next.push(MODULE_T);
+            next.push(REFERENCE_T);
+            next.push(DESCRIPTION_T);
+        }
+        status=StatusPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* REFERENCE_T */
+        }
+        reference=ReferencePart(next)
+        {
+            next.pop(); /* MODULE_T */
+        }
+        modulecompliance=ModuleCompliancePart()
+        {
+            object_info = new ObjectInfoModuleCompliance(status,
+                                            description,
+                                            reference,
+                                            modulecompliance);
+        }
+    |
+        sort_t=<AGENT_CAPABILITIES_T>
+        {
+            next.push(SUPPORTS_T);
+            next.push(REFERENCE_T);
+            next.push(DESCRIPTION_T);
+            next.push(STATUS_T);
+        }
+        productrelease=ProductReleasePart(next)
+        {
+            next.pop(); /* STATUS_T */
+        }
+        status=StatusPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* REFERENCE_T */
+        }
+        reference=ReferencePart(next)
+        {
+            next.pop(); /* SUPPORTS_T */
+        }
+        modulecapabilities=ModuleCapabilitiesPart()
+        {
+            object_info = new ObjectInfoAgentCapabilities(productrelease,
+                                            status,
+                                            description,
+                                            reference,
+                                            modulecapabilities);
+        }
+    )
+    {
+        return object_info;
+    }
+}
+
+
+JAVACODE
+MacroBody MacroBody()
+{
+    Token tok;
+    while ( true ) {
+        tok = getToken(1);
+        if ( tok.kind == END_T ) {
+            break;
+        }
+        tok = getNextToken();
+    }
+    return new MacroBody();
+}
+
+JAVACODE
+TypeChoice TypeChoice()
+{
+    Token tok;
+    NodeList items = new NodeList();
+    int nesting = 0;
+    tok = getNextToken();
+    if ( tok.kind == LEFT_BRACE_T ) {
+        nesting = 1;
+    }
+    while ( nesting > 0 ) {
+        tok = getNextToken();
+        if ( tok.kind == LEFT_BRACE_T ) {
+            nesting++;
+        }
+        if ( tok.kind == RIGHT_BRACE_T ) {
+            nesting--;
+        }
+    }
+    return new TypeChoice(items);
+}
+
+TypeTag TypeTag(Recovery next) : {
+    Token lsquare;
+    Token sort;
+    Token number;
+    Token rsquare;
+    Token kind;
+    TypeTag typeTag = new TypeTag();
+    next.push(DEC_NUMBER_T);
+    next.push(RIGHT_SQUARE_T);
+    next.push(EXPLICIT_T);
+    next.push(IMPLICIT_T);
+}
+{
+    (
+        lsquare=<LEFT_SQUARE_T>
+        try {
+            (
+                sort=<APPLICATION_T>                
+            |
+                sort=<UNIVERSAL_T>                
+            |
+                sort=<PRIVATE_T>                
+            )
+            { typeTag.setSort(makeNodeToken(sort)); }
+        } catch (ParseException e) {
+            handleError(e, next,
+                                        "tag sort <APPLICATION/UNIVERSAL/PRIVATE>");
+        } finally {
+            next.pop(); /* DEC_NUMBER_T */
+        }
+        try {
+            number=<DEC_NUMBER_T>
+            { typeTag.setNumber(new NumericValue(makeNodeToken(number))); }
+        } catch (ParseException e) {
+            handleError(e, next, "<decimal tag number>");
+        } finally {
+            next.pop(); /* RIGHT_SQUARE_T */
+        }
+        rsquare=<RIGHT_SQUARE_T>
+        {
+            next.pop(2); /* EXPLICIT_T, IMPLICIT_T */
+        }
+        (
+            (
+                kind=<EXPLICIT_T>                
+            |
+                kind=<IMPLICIT_T>                
+            )
+            { typeTag.setKind(makeNodeToken(kind)); }
+        )?
+    )?
+    { return typeTag; }
+}
+
+TypeSmi Asn1Types() : {
+    TypeSmi type;
+    Token type_t;
+    Restriction restriction;
+}
+{
+    (
+        /* INTEGER type, has an optional range restriction. */
+        type_t=<INTEGER_T>
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+        (
+            restriction=RestrictionRange()
+            { type.addRestriction(restriction); }
+        )?
+    |
+        /* BITS types, have an optional name/number list restriction. */
+        type_t=<BIT_STRING_T>
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+    |
+        /* OCTET STRING type, has an optional size restriction. */
+        type_t=<OCTET_STRING_T>
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+        (
+            restriction=RestrictionSize(new Recovery(new int[0]))
+            { type.addRestriction(restriction); }
+        )?
+    |
+        type_t=<OBJECT_IDENTIFIER_T>        
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+    )
+    { return type; }
+}
+
+NodeList RevisionPart(Recovery next) : {
+    NodeList revisions = new NodeList();
+    Token revision_t;
+    Token time_t;
+    NodeToken time;
+    DescriptionPart description;
+    next.push(REVISION_T);
+}
+{
+    (
+        revision_t=<REVISION_T>
+        {
+            next.push(DESCRIPTION_T);
+        }
+        try {
+            time_t=<UTC_TIME_T>
+        } catch (ParseException e) {
+            handleError(e, next, "<utc time>"); 
+            time_t = new Token();
+        } finally {
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            revisions.addNode(new Revision(
+                        makeNodeToken(time_t), description));
+        }
+    )*
+    { revisions.nodes.trimToSize(); }
+    { return revisions; }
+}
+
+StatusPart StatusPart(Recovery next) : {
+    Token key;
+    Token value;
+    NodeToken status;
+}
+{
+    try {
+        key=<STATUS_T>
+        (
+            value=<CURRENT_T>            
+        |
+            value=<DEPRECATED_T>            
+        |
+            value=<OBSOLETE_T>            
+        |
+            value=<MANDATORY_T>            
+        )
+        { status = makeNodeToken(value); }
+    } catch (ParseException e) {
+        if (e.currentToken.kind == STATUS_T) {
+            handleError(e, next, "<status value>");
+            status = makeNodeToken(-1);
+        } else if ((e.currentToken.next.kind == CURRENT_T) ||
+                   (e.currentToken.next.kind == DEPRECATED_T) ||
+                   (e.currentToken.next.kind == CURRENT_T) ||
+                   (e.currentToken.next.kind == CURRENT_T)) {
+            Token tok = getNextToken();
+            Message.error(tok.beginLine, "missing 'STATUS'-keyword");
+            status = makeNodeToken(tok);
+        } else {
+            Message.error(getToken(1).beginLine, "STATUS-clause missing");
+            status = makeNodeToken(-1);
+            recovery(next);
+        }
+    }
+    { return new StatusPart(status); }
+}
+
+AccessPart AccessPart(int access_type, Recovery next) : {
+    Token key;
+    Token value;
+    AccessPart access = new AccessPart();
+    Recovery next_values = new Recovery();
+    next_values.push(NOT_ACCESSIBLE_T);
+    next_values.push(ACCESSIBLE_FOR_NOTIFY_T);
+    next_values.push(READ_ONLY_T);
+    next_values.push(READ_WRITE_T);
+    next_values.push(READ_CREATE_T);
+    next_values.push(WRITE_ONLY_T);
+    next_values.push(NOT_IMPLEMENTED_T);
+}
+{
+    try {
+        (
+            key=<ACCESS_T>
+        |
+            key=<MIN_ACCESS_T>
+        |
+            key=<MAX_ACCESS_T>
+        )
+        {
+            access.key = makeNodeToken(key);
+        }
+    } catch (ParseException e) {
+        access.key = makeNodeToken(access_type, tokenImage[access_type]);
+        if (next_values.contains(e.currentToken.next.kind)) {
+            handleError(e, next, tokenImage[access_type]);
+        } else {
+            StringBuffer str = new StringBuffer(tokenImage[access_type]);
+            str.deleteCharAt(0);
+            str.deleteCharAt(str.length()-1);
+            Message.error(getToken(1).beginLine, str + "-clause missing");
+            access.value = makeNodeToken(-1);
+            return access;
+        }
+    }
+    try {
+        (
+            value=<NOT_ACCESSIBLE_T>
+        |
+            value=<ACCESSIBLE_FOR_NOTIFY_T>
+        |
+            value=<READ_ONLY_T>
+        |
+            value=<READ_WRITE_T>
+        |
+            value=<READ_CREATE_T>
+        |
+            value=<WRITE_ONLY_T>
+        |
+            value=<NOT_IMPLEMENTED_T>
+        )
+        {
+            access.value = makeNodeToken(value);
+        }
+    } catch (ParseException e) {
+        handleError(e, next, "<access value>");
+        access.value = makeNodeToken(-1);
+    }
+    {
+        return access;
+    }
+}
+
+NodeList ModuleCompliancePart() : {
+    NodeList module_list = new NodeList();
+    ModuleCompliance module_compliance;
+}
+{
+    (
+        module_compliance=ModuleCompliance()
+        { module_list.addNode(module_compliance); }
+    )+
+    { module_list.nodes.trimToSize(); }
+    { return module_list; }
+}
+
+ModuleCompliance ModuleCompliance() : {
+    Token module_t;
+    ModuleIdentifier module_id;
+    NodeList mandatory;
+    CompliancePart compliance;
+    ModuleCompliance module_compliance = new ModuleCompliance();
+    Recovery next = new Recovery();
+    next.push(ASSIGN_T);
+    next.push(GROUP_T);
+    next.push(OBJECT_T);
+}
+{
+    module_t=<MODULE_T>
+    (
+        module_id=ModuleIdentifier()
+        { module_compliance.addModuleIdentifier(module_id); }
+    )?
+    (
+        mandatory=MandatoryPart(next)
+        { module_compliance.addMandatoryPart(mandatory); }
+    )?
+    (
+        try {
+            compliance=CompliancePart(next)
+            { module_compliance.addCompliancePart(compliance); }
+        } catch (ParseException e) {
+            handleError(e, next, "<compliance part>");
+        }
+    )*
+    { return module_compliance; }
+}
+
+NodeList MandatoryPart(Recovery next) : {
+    Token mandatory_groups_t;
+    NodeList list;
+}
+{
+    mandatory_groups_t=<MANDATORY_GROUPS_T>
+    list=BracedValueList(next)
+    { return list; }
+}
+
+CompliancePart CompliancePart(Recovery next) : {
+    Token sort_t;
+    Identifier identifier;
+    DescriptionPart description;
+    SyntaxPart syntax;
+    WriteSyntaxPart write_syntax;
+    AccessPart min_access;
+    ComplianceObject compliance_object;
+    CompliancePart compliance;
+}
+{
+    (
+        sort_t=<GROUP_T>
+        identifier=ValueIdentifier()
+        description=DescriptionPart(next)
+        {
+            compliance = new ComplianceGroup(identifier, description);
+        }
+    |
+        {
+            boolean has_syntax = false;
+            boolean has_write_syntax = false;
+            boolean has_min_access = false;
+            next.push(DESCRIPTION_T);
+            next.push(MIN_ACCESS_T);
+            next.push(WRITE_SYNTAX_T);
+            next.push(SYNTAX_T);
+        }
+        sort_t=<OBJECT_T>
+        identifier=ValueIdentifier()
+        {
+            compliance_object = new ComplianceObject(identifier);
+        }
+        (
+            syntax=SyntaxPart(next)
+            {
+                compliance_object.addNode(syntax);
+                has_syntax = true;
+            }
+        )?
+        {
+            next.pop(); /* SYNTAX_T */
+        }
+        (
+            write_syntax=WriteSyntaxPart(next)
+            {
+                compliance_object.addNode(write_syntax);
+                has_write_syntax = true;
+            }
+        )?
+        {
+            next.pop(); /* WRITE_SYNTAX_T */
+        }
+        (
+            min_access=AccessPart(MIN_ACCESS_T, next)
+            {
+                compliance_object.addNode(min_access);
+                has_min_access = true;
+            }
+        )?
+        {
+            next.pop(); /* MIN_ACCESS_T */
+        }
+        {
+            if (getToken(1).kind != DESCRIPTION_T) {
+                String str = "";
+                if (!has_min_access) {
+                    str += "MIN-ACCESS-";
+                    if (!has_write_syntax) {
+                        str += ", WRITE-SYNTAX-";
+                        if (!has_syntax) {
+                            str += ", SYNTAX-";
+                        }
+                    }
+                    str += " or ";
+                }
+                makeError(getToken(1), "expected " + str + "DESCRIPTION-clause");
+                recovery(next);
+            }
+            next.pop(); /* DESCRIPTION_T */
+        }
+        description=DescriptionPart(next)
+        {
+            next.pop(); /* DESCRIPTION_T */
+            compliance_object.addNode(description);
+            compliance = compliance_object;
+        }
+    )
+    { return compliance; }
+}
+
+NodeList ModuleCapabilitiesPart() : {
+    NodeList module_capabilities_list = new NodeList();
+    ModuleCapability module_capability;
+    Recovery next = new Recovery();
+    next.push(ASSIGN_T);
+    next.push(SUPPORTS_T);
+}
+{
+    (
+        module_capability=ModuleCapability(next)
+        { module_capabilities_list.addNode(module_capability); }
+    )*
+    { return module_capabilities_list; }
+}
+
+ModuleCapability ModuleCapability(Recovery next) : {
+    NodeList capabilitiesList;
+    Token support_t;
+    ModuleIdentifier module_id;
+    Token includes_t;
+    NodeList list;
+    NodeList variation_list = new NodeList();
+    VariationPart variation;
+}
+{
+    support_t=<SUPPORTS_T>
+    try {
+        module_id=ModuleIdentifier()
+    } catch (ParseException e) {
+        handleError(e, INCLUDES_T, "<module identifier>");
+        module_id = new ModuleIdentifier(makeNodeToken(TYPE_IDENTIFIER_T));
+    }
+    try {
+        includes_t=<INCLUDES_T>
+    } catch (ParseException e) {
+        handleError(e, LEFT_BRACE_T, "'INCLUDES'");
+    }
+    list=BracedValueList(next)
+    (
+        variation=VariationPart()
+        { variation_list.addNode(variation); }
+    )*
+    { variation_list.nodes.trimToSize(); }
+    { return new ModuleCapability(module_id,
+                            list,
+                            variation_list); }
+}
+
+VariationPart VariationPart() : {
+    Token variation_t;
+    Identifier identifier;
+    SyntaxPart syntax;
+    NodeOptional syntax_option = new NodeOptional();
+    WriteSyntaxPart write_syntax;
+    NodeOptional write_syntax_option = new NodeOptional();
+    AccessPart access;
+    NodeOptional access_option = new NodeOptional();
+    Token creation_t;
+    NodeList list;
+    NodeOptional creation_option = new NodeOptional();
+    DefValPart defval;
+    DescriptionPart description;
+    Recovery next = new Recovery();
+    next.push(DESCRIPTION_T);
+    next.push(DEFVAL_T);
+    next.push(CREATION_REQUIRES_T);
+    next.push(ACCESS_T);
+    next.push(WRITE_SYNTAX_T);
+    next.push(SYNTAX_T);
+}
+{
+    variation_t=<VARIATION_T>
+    try {
+        identifier=ValueIdentifier()
+    } catch (ParseException e) {
+        handleError(e, next, "<value identifier>");
+        identifier = Identifier.Value(makeNodeToken(VALUE_IDENTIFIER_T));
+    } finally {
+        next.pop(); /* SYNTAX_T */
+    }
+    (
+        syntax=SyntaxPart(next)
+        { syntax_option.addNode(syntax); }
+    )?
+    {
+        next.pop(); /* WRITE_SYNTAX_T */
+    }
+    (
+        write_syntax=WriteSyntaxPart(next)
+        { write_syntax_option.addNode(write_syntax); }
+    )?
+    {
+        next.pop(); /* ACCESS_T */
+    }
+    (
+        access=AccessPart(ACCESS_T, next)
+        { access_option.addNode(access); }
+    )?
+    {
+        next.pop(); /* CREATION_REQUIRES_T */
+    }
+    (
+        creation_t=<CREATION_REQUIRES_T>
+        list=BracedValueList(next)
+        { creation_option.addNode(list); }
+    )?
+    {
+        next.pop(); /* DEFVAL_T */
+    }
+    defval=DefValPart(next)
+    {
+        next.pop(); /* DESCRIPTION_T */
+    }
+    description=DescriptionPart(next)
+    { return new VariationPart(identifier,
+                            syntax_option,
+                            write_syntax_option,
+                            access_option,
+                            creation_option,
+                            defval,
+                            description); }
+}
+
+SyntaxPart SyntaxPart(Recovery next) : {
+    Token key;
+    Type type;
+}
+{
+    try {
+        key=<SYNTAX_T>
+        type=Types()
+    } catch (ParseException e) {
+        if (e.currentToken.kind == SYNTAX_T) {
+            handleError(e, next, "<type>");
+        } else {
+            Message.error(getToken(1).beginLine, "SYNTAX-clause missing");
+            recovery(next);
+        }
+        type = new TypeIdentifier();
+    }
+    {
+        return new SyntaxPart(type);
+    }
+}
+
+WriteSyntaxPart WriteSyntaxPart(Recovery next) : {
+    Token key;
+    Type type; 
+}   
+{   
+    key=<WRITE_SYNTAX_T>
+    type=Types()
+    { return new WriteSyntaxPart(type); } 
+}   
+
+Type Types() : {
+    Type type;
+    Token type_t;
+    Identifier identifier;
+    Restriction restriction;
+}
+{
+    (
+        /* 'SEQUENCE OF' always comes with an identifier, stored in the restriction. */
+        type_t=<SEQUENCE_OF_T>
+        identifier=TypeIdentifier()
+        { type = new TypeSequenceOf(identifier); }
+    |
+        /* INTEGER types, have an optional named number list or range restriction. */
+        (
+            type_t=<INTEGER_T>
+        |
+            type_t=<INTEGER32_T>
+        |
+            type_t=<UINTEGER32_T>
+        |
+            type_t=<UNSIGNED32_T>
+        )        { type = new TypeSmi(makeNodeToken(type_t)); }
+        (
+            (
+                restriction=RestrictionNamedNumberList()
+            |
+                restriction=RestrictionRange()
+            )
+            { type.addRestriction(restriction); }
+        )?
+    |
+        (
+            type_t=<GAUGE_T>
+        |
+            type_t=<GAUGE32_T>
+        )
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+        (
+            restriction=RestrictionRange()
+            { type.addRestriction(restriction); }
+        )?
+    |
+        /* BITS types, only have an optional named number list restriction. */
+        (
+            type_t=<BITS_T>
+        |
+            type_t=<BIT_STRING_T>
+        )
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+        (
+            restriction=RestrictionNamedNumberList()
+            { type.addRestriction(restriction); }
+        )?
+    |
+        /* OCTET STRING types, only have an optional size restriction. */
+        (
+            type_t=<OCTET_STRING_T>
+        |
+            type_t=<OPAQUE_T>
+        )
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+        (
+            restriction=RestrictionSize(new Recovery(new int[0]))
+            { type.addRestriction(restriction); }
+        )?
+    |
+        type_t=<OBJECT_IDENTIFIER_T>        
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+    |
+        type_t=<COUNTER_T>        
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+    |
+        type_t=<COUNTER32_T>        
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+    |
+        type_t=<COUNTER64_T>        
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+    |
+        type_t=<TIMETICKS_T>        
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+    |
+        type_t=<NSAP_ADDRESS_T>        
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+    |
+        type_t=<IP_ADDRESS_T>
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+    |
+        type_t=<NETWORK_ADDRESS_T>        
+        { type = new TypeSmi(makeNodeToken(type_t)); }
+    |
+        identifier=TypeIdentifier()
+        { type = new TypeIdentifier(identifier); }
+        (
+            (
+                LOOKAHEAD(2)
+                restriction=RestrictionRange()
+            |
+                restriction=RestrictionNamedNumberList()
+            |
+                LOOKAHEAD(2)
+                restriction=RestrictionSize(new Recovery(new int[0]))
+            )
+            { type.addRestriction(restriction); }
+        )?
+    )
+    { return type; }
+}
+
+RestrictionRange RestrictionRange() : {
+    RangeList var2;
+    Recovery next = new Recovery();
+}
+{
+    LParenSymbol(next)
+    var2=RangeList()
+    RParenSymbol(next)
+    { return new RestrictionRange(var2); }
+}
+
+RestrictionSize RestrictionSize(Recovery next) : {
+    Token var3;
+    RangeList range;
+    next.push(SIZE_T);
+}
+{
+    LParenSymbol(next)
+    {
+        next.pop(); /* SIZE_T */
+    }
+    var3=<SIZE_T>
+    {
+        next.push(RIGHT_PAREN_T);
+        next.push(DEC_NUMBER_T);
+    }
+    LParenSymbol(next)
+    {
+        next.pop(); /* DEC_NUMBER_T */
+    }
+    range=RangeList()
+    {
+        next.pop(); /* RIGHT_PAREN_T */
+    }
+    RParenSymbol(next)
+    RParenSymbol(next)
+    { return new RestrictionSize(range); }
+}
+
+RestrictionNamedNumberList RestrictionNamedNumberList() : {
+    NodeList list = new NodeList();
+    NamedNumber item;
+    Token comma_t;
+    Recovery next = new Recovery();
+    next.push(VALUE_IDENTIFIER_T);
+}
+{
+    LBraceSymbol(next)
+    {
+        next.pop(); /* VALUE_IDENTIFIER_T */
+        next.push(RIGHT_BRACE_T);
+        next.push(COMMA_T);
+    }
+    item=NamedNumber_Rule(next)
+    {
+        list.addNode(item);
+    }
+    (
+        comma_t=<COMMA_T>
+        item=NamedNumber_Rule(next)
+        {
+            list.addNode(item);
+        }
+    )*
+    {
+        list.nodes.trimToSize();
+        next.pop(); /* COMMA_T */
+        next.pop(); /* RIGHT_BRACE_T */
+    }
+    RBraceSymbol(next)
+    {
+        return new RestrictionNamedNumberList(list);
+    }
+}
+
+RangeList RangeList() : {
+    RangeList list;
+    Token sort_t;
+    RangeItem range;
+}
+{
+    range=RangeItem()
+    { list = new RangeList(range); }
+    (
+        sort_t=<OR_T>
+        range=RangeItem()
+        { list.addNode(range); }
+    )*
+    { return list; }
+}
+
+RangeItem RangeItem() : {
+    NumericValue number;
+    Token sort_t;
+    RangeItem range_item;
+}
+{
+    number=NumericValue() 
+    { range_item = new RangeItem(number); }
+    ( 
+        sort_t=<UNTIL_T>
+        number=NumericValue()
+        { range_item.addEndNumber(number); }
+    )?
+    { return range_item; }
+}
+
+NamedNumber NamedNumber_Rule(Recovery next) : {
+    Identifier identifier = null;
+    Token number_t;
+    NumericValue number = null;
+}
+{
+    try {
+        identifier=ValueIdentifier()
+        <LEFT_PAREN_T>
+        try {
+            number_t=<DEC_NUMBER_T>
+            { number = new NumericValue(makeNodeToken(number_t)); }
+        } catch (ParseException e) {
+            handleError(e, next, "<number>");
+        }
+        <RIGHT_PAREN_T>
+    } catch (ParseException e) {
+        if (e.currentToken.kind == DEC_NUMBER_T) {
+            handleError(e, next, "')' for <named number :" + identifier + ">");
+        } else if (e.currentToken.kind == LEFT_PAREN_T) {
+            handleError(e, next, "<number> for <named number :" + identifier + ">");
+        } else if (e.currentToken.kind == VALUE_IDENTIFIER_T) {
+            handleError(e, next, "'(' for <named number :" + identifier + ">");
+        } else {
+            handleError(e, next, "<named number>");
+        }
+    }
+    { return new NamedNumber(identifier,
+                            number); }
+}
+
+Identifier ValueIdentifier() : {
+    ModuleIdentifier module;
+    Token dot_t;
+    NodeToken value;
+    Identifier identifier;
+}
+{
+    (
+        module=ModuleIdentifier()
+        dot_t=<DOT_T>
+        value=ValueExpansion()
+        { identifier = Identifier.Value(module,
+                            value); }
+    |
+        value=ValueExpansion()
+        { identifier = Identifier.Value(value); }
+    )
+    { return identifier; }
+}
+
+/**
+ * ValueExpansion
+ * Is used to group the value identifier with some of the
+ * t allowed to be value identifiers as well.
+ */
+NodeToken ValueExpansion() : {
+    Token value;
+}
+{
+    (   
+        value=<VALUE_IDENTIFIER_T>
+    |
+        value=<NOT_IMPLEMENTED_T>
+    |
+        value=<CURRENT_T>
+    |
+        value=<DEPRECATED_T>
+    |
+        value=<OBSOLETE_T>
+    |
+        value=<MANDATORY_T>
+    )
+    { return makeNodeToken(value); }
+}
+
+ModuleIdentifier ModuleIdentifier() : {
+    Token module_id;
+}
+{
+    module_id=<TYPE_IDENTIFIER_T>    
+    { return new ModuleIdentifier(makeNodeToken(module_id)); }
+}
+
+Identifier TypeIdentifier() : {
+    ModuleIdentifier module_id;
+    Token dot_t;
+    Token type;
+    Identifier identifier;
+}
+{
+    (
+        LOOKAHEAD(2)
+        module_id=ModuleIdentifier()
+        dot_t=<DOT_T>
+        type=<TYPE_IDENTIFIER_T>
+        { identifier = Identifier.Type(module_id,
+                            makeNodeToken(type)); }
+    |
+        type=<TYPE_IDENTIFIER_T>            
+        { identifier = Identifier.Type(makeNodeToken(type)); }
+    )
+    { return identifier; }
+}
+
+IndexPart IndexPart(Recovery next) : {
+    Token sort;
+    Identifier identifier;
+    IndexPart index_part = new IndexList();
+}
+{
+    (
+        (
+            sort=<INDEX_T>
+            {
+                next.push(RIGHT_BRACE_T);
+                next.push(IMPLIED_T);
+                next.push(VALUE_IDENTIFIER_T);
+            }
+            LBraceSymbol(next)
+            try {
+                index_part=IndexList()
+                {
+                    next.pop(); /* VALUE_IDENTIFIER_T */
+                    next.pop(); /* IMPLIED_T */
+                }
+            } catch (ParseException e) {
+                makeError(e.currentToken, "error in INDEX-clause");
+                recovery(next);
+            }
+            {
+                next.pop(); /* RIGHT_BRACE_T */
+            }
+            RBraceSymbol(next)
+        |
+            sort=<AUGMENTS_T>
+            {
+                next.push(RIGHT_BRACE_T);
+                next.push(VALUE_IDENTIFIER_T);
+            }
+            LBraceSymbol(next)
+            try {
+                identifier=ValueIdentifier()
+                {
+                    index_part = new IndexAugments(identifier);
+                }
+            } catch (ParseException e) {
+                makeError(e.currentToken, "error in AUGMENTS-clause");
+                recovery(next);
+            }
+            {
+                next.pop(); /* RIGHT_BRACE_T */
+            }
+            RBraceSymbol(next)
+        )
+    )?
+    { return index_part; }
+}
+
+IndexList IndexList() : {
+    NodeList list = new NodeList();
+    Token implied_t;
+    Identifier identifier;
+    Token comma_t;
+    boolean implied;
+}
+{
+    { implied = false; }
+    (
+        implied_t=<IMPLIED_T>
+    )?
+    identifier=ValueIdentifier()
+    { list.addNode(new Index(identifier, implied)); }
+    (
+        comma_t=<COMMA_T>
+        { implied = false; }
+        (
+            implied_t=<IMPLIED_T>
+            { implied = true; }
+        )?
+        identifier=ValueIdentifier()
+        { list.addNode(new Index(identifier, implied)); }
+    )*
+    { list.nodes.trimToSize(); }
+    { return new IndexList(list); }
+}
+
+AssignedValue AssignedValue() : {
+    Recovery next = new Recovery();
+    next.push(RIGHT_BRACE_T);
+    next.push(DEC_NUMBER_T);
+    next.push(VALUE_IDENTIFIER_T);
+    NodeList list = new NodeList();
+    OidValue item;
+}
+{
+    LBraceSymbol(next)
+    (
+        item=OidValue()
+        {
+            list.addNode(item);
+        }
+    )+
+    {
+        list.nodes.trimToSize();
+        next.pop(3); /* VALUE_IDENTIFIER_T, DEC_NUMBER_T, RIGHT_BRACE_T */
+    }
+    RBraceSymbol(next)
+    { return new AssignedValue(list); }
+}
+
+OidValue OidValue() : {
+    Identifier name;
+    NumericValue numval;
+    OidValue oidval;
+    Recovery next = new Recovery();
+}
+{
+    (
+        name=ValueIdentifier()
+        {
+            oidval = new OidValue(name);
+            if (getToken(1).kind == LEFT_PAREN_T) {
+                LParenSymbol(next);
+                oidval.setNumber(NumericValue());
+                RParenSymbol(next);
+            }
+        }
+    |
+        numval=NumericValue()
+        { oidval = new OidValue(numval); }
+    )
+    { return oidval; }
+}
+
+NumericValue NumericValue() : {
+    Token number;
+}
+{
+    (
+        number=<DEC_NUMBER_T>        
+    |
+        number=<BIN_NUMBER_T>        
+    |
+        number=<HEX_NUMBER_T>        
+    )
+    { return new NumericValue(makeNodeToken(number)); }
+}
+
+JAVACODE
+DescriptionPart DescriptionPart(Recovery next) {
+    return new DescriptionPart(Item_and_Text_Rule(next, DESCRIPTION_T));
+}
+
+JAVACODE
+ReferencePart ReferencePart(Recovery next) {
+    return new ReferencePart(Item_and_Text_Option_Rule(next, REFERENCE_T));
+}
+
+JAVACODE
+ContactInfoPart ContactInfoPart(Recovery next) {
+    return new ContactInfoPart(Item_and_Text_Rule(next, CONTACT_INFO_T));
+}
+
+JAVACODE
+OrganizationPart OrganizationPart(Recovery next) {
+    return new OrganizationPart(Item_and_Text_Rule(next, ORGANIZATION_T));
+}
+
+DefValPart DefValPart(Recovery next) : {
+    NodeOptional value = new NodeOptional();
+    Token defval_t;
+}
+{
+    (
+        defval_t=<DEFVAL_T>
+        {
+            next.push(RIGHT_BRACE_T);
+            next.push(DEC_NUMBER_T);
+            next.push(VALUE_IDENTIFIER_T);
+            next.push(TEXT_T);
+        }
+        LBraceSymbol(next)
+        (
+            {
+                NumericValue number;
+            }
+            number=NumericValue()
+            {
+                value.addNode(number);
+            }
+        |
+            {
+                Identifier identifier;
+            }
+            identifier=ValueIdentifier()
+            {
+                value.addNode(identifier);
+            }
+        |
+            {
+                Token text_t;
+            }
+            text_t=<TEXT_T>
+            {
+                value.addNode(makeNodeToken(text_t));
+            }
+        |
+            LOOKAHEAD(2)
+            {
+                NodeList list;
+            }
+            list=BitValueList(next)
+            {
+                value.addNode(new BitValueList(list));
+            }
+        |
+            LOOKAHEAD(2)
+            {
+                AssignedValue oidValue;
+            }
+            oidValue=AssignedValue()
+            {
+                value.addNode(oidValue);
+            }
+        )
+        {
+            next.pop(4); /* TEXT_T, VALUE_IDENTIFIER_T, DEC_NUMBER_T, RIGHT_BRACE_T */
+        }
+        RBraceSymbol(next)
+    )?
+    {
+        return new DefValPart(value);
+    }
+}
+
+NodeList BitValueList(Recovery next) : {
+    next.push(VALUE_IDENTIFIER_T);
+    NodeList list = new NodeList();
+}
+{
+    LBraceSymbol(next)
+    (
+        list=ValueList(next)
+    )?
+    {
+        next.pop(); /* VALUE_IDENTIFIER_T */
+    }
+    RBraceSymbol(next)
+    { return list; }
+}
+
+JAVACODE
+DisplayHintPart DisplayHintPart(Recovery next) {
+    return new DisplayHintPart(Item_and_Text_Option_Rule(next, DISPLAY_HINT_T));
+}
+
+LastUpdatedPart LastUpdatedPart(Recovery next) : {
+    Token key;
+    Token utc_time;
+    next.push(UTC_TIME_T);
+}
+{
+    try {
+        key=<LAST_UPDATED_T>
+    } catch (ParseException e) {
+        handleError(e, next, "LAST-UPDATED");
+    } finally {
+        next.pop(); /* UTC_TIME_T */
+    }
+    try {
+        utc_time=<UTC_TIME_T>    
+    } catch (ParseException e) {
+        handleError(e, next, "LAST-UPDATED", "<utc-time>");
+        utc_time = Token.newToken(UTC_TIME_T);
+        utc_time.image = "";
+    }
+    { return new LastUpdatedPart(makeNodeToken(utc_time)); }
+}
+
+JAVACODE
+UnitsPart UnitsPart(Recovery next) {
+    return new UnitsPart(Item_and_Text_Option_Rule(next, UNITS_T));
+}
+
+JAVACODE
+ProductReleasePart ProductReleasePart(Recovery next) {
+    return new ProductReleasePart(Item_and_Text_Rule(next, PRODUCT_RELEASE_T));
+}
+
+NodeList ObjectsPart(boolean isOption, Recovery next) : {
+    Token objects_t;
+    NodeList list;
+}
+{
+    try {
+        objects_t=<OBJECTS_T>
+    } catch (ParseException e) {
+        if (isOption) {
+            return new NodeList();
+        }
+        handleError(e, LEFT_BRACE_T, "'OBJECTS'");
+    }
+    list=BracedValueList(next)
+    { return list; }
+}
+
+NodeList NotificationPart(Recovery next) : {
+    Token key;
+    NodeList list;
+}
+{
+    try {
+        key=<NOTIFICATIONS_T>
+    } catch (ParseException e) {
+        if (next.contains(e.currentToken.kind)) {
+            return new NodeList();
+        }
+        handleError(e, LEFT_BRACE_T, "'NOTIFICATIONS'");
+    }
+    list=BracedValueList(next)
+    { return list; }
+}
+
+/**
+ * EnterprisePart is for a SMIv1 TRAP-TYPE.
+ */
+EnterprisePart EnterprisePart(Recovery next) : {
+    Token key;
+    Identifier var;
+}
+{
+    key=<ENTERPRISE_T>
+    try {
+        var=ValueIdentifier()
+    } catch (ParseException e) {
+        handleError(e, next, "<value identifier>");
+        var = Identifier.Keyword(makeNodeToken(VALUE_IDENTIFIER_T));
+    }
+    { return new EnterprisePart(var); }
+}
+
+/**
+ * VariablesPart is for a SMIv1 TRAP-TYPE.
+ * Equivalent to a ObjectsPart of the NOTIFICATION-TYPE.
+ */
+NodeList VariablesPart(Recovery next) : {
+    Token var;
+    NodeList list = new NodeList();
+}
+{
+    (
+        var=<VARIABLES_T>
+        list=BracedValueList(next)
+    )?
+    { return list; }
+}
+
+/**
+ * BracedValueList
+ * Added for easier and less duplication of error recovery
+ * of the ValueList.
+ * ValueList has its own recovery inside.
+ */
+NodeList BracedValueList(Recovery next) : {
+    next.push(VALUE_IDENTIFIER_T);
+    NodeList list;
+}
+{
+    LBraceSymbol(next)
+    list=ValueList(next)
+    {
+        next.pop(); /* VALUE_IDENTITIFIER_T */
+    }
+    RBraceSymbol(next)
+    { return list; }
+}
+
+NodeList ValueList(Recovery next) : {
+    NodeList list = new NodeList();
+    Identifier identifier;
+    Token comma_t;
+    next.push(COMMA_T);
+    next.push(RIGHT_BRACE_T);
+}
+{
+    try {
+        identifier=ValueIdentifier()
+        { list.addNode(identifier); }
+    } catch (ParseException e) {
+        handleError(e, next, "<value identifier>");
+    }
+    (
+        try {
+            comma_t=<COMMA_T>
+            identifier=ValueIdentifier()
+            { list.addNode(identifier); }
+        } catch (ParseException e) {
+            handleError(e, next, "<value identifier>");
+        }
+    )*
+    { list.nodes.trimToSize(); }
+    { return list; }
+}
+
+/**
+ * BracedValueTypeList
+ * Added for easier and less duplication of error recovery
+ * of the '{' ValueType (',' ValueType )* '}'.
+ * ValueType has its own recovery inside.
+ */
+NodeList BracedValueTypeList() : {
+    NodeList list = new NodeList();
+    ValueType value_type;
+    Token comma_t;
+    Recovery next = new Recovery();
+    next.push(VALUE_IDENTIFIER_T);
+}
+{
+    LBraceSymbol(next)
+    {
+        next.pop(); /* VALUE_IDENTIFIER_T */
+        next.push(COMMA_T);
+        next.push(RIGHT_BRACE_T);
+    }
+    value_type=ValueType(next)
+    {
+        list.addNode(value_type);
+    }
+    (
+        comma_t=<COMMA_T>
+        value_type=ValueType(next)
+        {
+            list.addNode(value_type);
+        }
+    )*
+    {
+        next.pop(); /* COMMA_T */
+    }
+    RBraceSymbol(next)
+    {
+        return list;
+    }
+}           
+
+/**
+ * ValueType
+ * Used for combination of ValueIdentifier and a Type combination
+ * inside a CHOICE definition.
+ */
+ValueType ValueType(Recovery next) : {
+    Identifier identifier;
+    Type type;
+    Identifier type_exception;
+}
+{
+    try {
+        identifier=ValueIdentifier()
+    } catch (ParseException e) {
+        handleError(e, next, "<value identifier>");
+        return null;
+    }
+    try {
+        (
+            type=Types()
+        |
+            type_exception=TypeIdentifierException()
+            { type = new TypeIdentifier(type_exception); }
+        )
+    } catch (ParseException e) {
+        handleError(e, next, "<type>");
+        return null;
+    }
+    { return new ValueType(identifier, type); }
+}
+
+Identifier TypeIdentifierException() : {
+    Token syntax_t;
+    Identifier identifier;
+}
+{
+    (
+        syntax_t=<INDEX_SYNTAX_T>
+        { identifier = Identifier.Keyword(makeNodeToken(syntax_t)); }
+    |
+        syntax_t=<APPLICATION_SYNTAX_T>
+        { identifier = Identifier.Keyword(makeNodeToken(syntax_t)); }
+    |
+        syntax_t=<OBJECT_SYNTAX_T>
+        { identifier = Identifier.Keyword(makeNodeToken(syntax_t)); }
+    |
+        syntax_t=<SIMPLE_SYNTAX_T>
+        { identifier = Identifier.Keyword(makeNodeToken(syntax_t)); }
+    )
+    { return identifier; }
+}
+
+void AssignSymbol(Recovery next) : {
+    Token assign_t;
+}
+{
+    try {
+        assign_t=<ASSIGN_T>
+    } catch (ParseException e) {
+        handleError(e, next, "'::='");
+    }
+}
+
+void LBraceSymbol(Recovery next) : {
+}
+{
+    try {
+        <LEFT_BRACE_T>
+    } catch (ParseException e) {
+        handleError(e, next, "'{'");
+    }
+}
+
+void RBraceSymbol(Recovery next) : {
+}
+{
+    try {
+        <RIGHT_BRACE_T>
+    } catch (ParseException e) {
+        handleError(e, next, "'}'");
+    }
+}
+
+void LParenSymbol(Recovery next) : {
+}
+{
+    try {
+        <LEFT_PAREN_T>
+    } catch (ParseException e) {
+        handleError(e, next, "'('");
+    }
+}
+ 
+void RParenSymbol(Recovery next) : {
+}
+{
+    try {
+        <RIGHT_PAREN_T>
+    } catch (ParseException e) {
+        handleError(e, next, "')'");
+    }
+}
+
+JAVACODE
+NodeToken Item_and_Text_Rule(Recovery next, int item) {
+    Token key;
+    NodeToken text;
+
+    if (getToken(1).kind == item) {
+        /* The item-token is found. */
+        key = getNextToken();
+        if (getToken(1).kind == TEXT_T) {
+            /* The item-token is followed by TEXT-token. */
+            text = makeNodeToken(getNextToken());
+        } else {
+            /* The item-token is not followed by TEXT-token. */
+            Message.error(key.beginLine, key + " missing <quoted string>");
+            text = makeNodeToken(TEXT_T, "<quoted string>");
+        }
+    } else if (getToken(1).kind == TEXT_T) {
+        /* The item-token is missing, but the TEXT-token is there. */
+        String str = tokenImage[item].replace('"', '\'');
+        Message.error(getToken(1).beginLine, str + " keyword missing");
+        text=makeNodeToken(getNextToken());
+    } else {
+        /* The Item-Text clause is missing at all. */
+        StringBuffer str = new StringBuffer(tokenImage[item]);
+        str.deleteCharAt(0);
+        str.deleteCharAt(str.length()-1);
+        Message.error(getToken(1).beginLine, str + "-clause missing");
+        recovery(next);
+        text = makeNodeToken(TEXT_T, "<quoted string>");
+    }
+    return text;
+}
+
+JAVACODE
+NodeOptional Item_and_Text_Option_Rule(Recovery next, int item) {
+NodeOptional text = new NodeOptional();
+
+    if (getToken(1).kind == item) {
+        /* The Item-Text Rule is available. */
+        text.addNode(Item_and_Text_Rule(next, item));
+    }
+    return text;
+}
+
+JAVACODE
+void ErrorRule(Recovery next, String msg) {
+    makeError(getToken(0), msg);
+    recovery(next);
+} 
