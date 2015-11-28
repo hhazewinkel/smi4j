@@ -387,10 +387,11 @@ public class SmiGrammar implements SmiGrammarConstants {
 
   NodeList ModuleExport(NodeList exports) throws ParseException {
     Token tok;
-    while ( true ) {
+      boolean more = true;
+      while ( more ) {
         tok = getToken(1);
-        if ((tok.kind == SEMI_COLON_T) && (tok.kind == IMPORTS_T)) {
-            break;
+        if ((tok.kind == SEMI_COLON_T) || (tok.kind == IMPORTS_T)) {
+          more = false;
         }
         if (tok.kind != COMMA_T) {
             exports.addNode(makeNodeToken(tok));
