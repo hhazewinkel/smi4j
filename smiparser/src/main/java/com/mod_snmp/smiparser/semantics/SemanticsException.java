@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiParser.Semantics;
+package com.mod_snmp.smiparser.semantics;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * SemanticsException

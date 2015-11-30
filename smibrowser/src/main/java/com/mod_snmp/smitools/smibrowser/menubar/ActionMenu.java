@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiTools.SmiBrowser.MenuBar;
+package com.mod_snmp.smitools.smibrowser.menubar;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * ActionMenu

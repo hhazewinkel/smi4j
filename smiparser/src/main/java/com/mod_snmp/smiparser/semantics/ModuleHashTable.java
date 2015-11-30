@@ -1,10 +1,10 @@
-package com.mod_snmp.SmiParser.Semantics;
+package com.mod_snmp.smiparser.semantics;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.SmiParser.ErrorHandler.CriticalException;
-import com.mod_snmp.SmiParser.ErrorHandler.ErrorException;
-import com.mod_snmp.SmiParser.ErrorHandler.SmiException;
-import com.mod_snmp.SmiParser.SyntaxTree.ModuleIdentifier;
+import com.mod_snmp.smiparser.errorhandler.CriticalException;
+import com.mod_snmp.smiparser.errorhandler.ErrorException;
+import com.mod_snmp.smiparser.errorhandler.SmiException;
+import com.mod_snmp.smiparser.syntaxtree.ModuleIdentifier;
 
 import java.util.Hashtable;
 

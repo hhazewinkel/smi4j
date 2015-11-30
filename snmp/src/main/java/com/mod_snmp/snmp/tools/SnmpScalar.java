@@ -1,14 +1,14 @@
-package com.mod_snmp.Snmp.Tools;
+package com.mod_snmp.snmp.tools;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.Snmp.Manager.Arguments;
-import com.mod_snmp.Snmp.Manager.ManagedInstance;
-import com.mod_snmp.Snmp.Manager.SnmpManager;
-import com.mod_snmp.Snmp.Manager.SnmpManagerException;
-import com.mod_snmp.Snmp.Protocol.SnmpMessageException;
-import com.mod_snmp.Snmp.Protocol.SnmpPdu;
-import com.mod_snmp.Snmp.Values.SnmpValueException;
-import com.mod_snmp.Snmp.Values.VarbindList;
+import com.mod_snmp.snmp.manager.Arguments;
+import com.mod_snmp.snmp.manager.ManagedInstance;
+import com.mod_snmp.snmp.manager.SnmpManager;
+import com.mod_snmp.snmp.manager.SnmpManagerException;
+import com.mod_snmp.snmp.protocol.SnmpMessageException;
+import com.mod_snmp.snmp.protocol.SnmpPdu;
+import com.mod_snmp.snmp.values.SnmpValueException;
+import com.mod_snmp.snmp.values.VarbindList;
 
 /**
  * Retrieving the managed instances provided.

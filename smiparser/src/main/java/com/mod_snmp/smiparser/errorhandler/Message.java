@@ -1,10 +1,10 @@
-package com.mod_snmp.SmiParser.ErrorHandler;
+package com.mod_snmp.smiparser.errorhandler;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * Message
  */
-import com.mod_snmp.SmiParser.Grammar.Token;
-import com.mod_snmp.SmiParser.SyntaxTree.Node;
+import com.mod_snmp.smiparser.grammar.Token;
+import com.mod_snmp.smiparser.syntaxtree.Node;
 
 public class Message {
     /**

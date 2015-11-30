@@ -1,4 +1,4 @@
-package com.mod_snmp.Snmp.Values;
+package com.mod_snmp.snmp.values;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 /**

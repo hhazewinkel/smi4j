@@ -1,14 +1,14 @@
-package com.mod_snmp.Snmp.Manager;
+package com.mod_snmp.snmp.manager;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.Snmp.Protocol.SecModelNumberInterface;
-import com.mod_snmp.Snmp.Protocol.SnmpEngineException;
-import com.mod_snmp.Snmp.Protocol.SnmpMessageInterface;
-import com.mod_snmp.Snmp.Protocol.User;
-import com.mod_snmp.Snmp.Protocol.UserException;
-import com.mod_snmp.Snmp.Utils.ServiceAddress;
-import com.mod_snmp.Snmp.Values.SnmpValueException;
-import com.mod_snmp.Snmp.Values.VarbindList;
+import com.mod_snmp.snmp.protocol.SecModelNumberInterface;
+import com.mod_snmp.snmp.protocol.SnmpEngineException;
+import com.mod_snmp.snmp.protocol.SnmpMessageInterface;
+import com.mod_snmp.snmp.protocol.User;
+import com.mod_snmp.snmp.protocol.UserException;
+import com.mod_snmp.snmp.utils.ServiceAddress;
+import com.mod_snmp.snmp.values.SnmpValueException;
+import com.mod_snmp.snmp.values.VarbindList;
 import net.lisanza.CliArgs.ArgsException;
 import net.lisanza.CliArgs.ArgsHandlerInterface;
 import net.lisanza.CliArgs.ArgsReader;

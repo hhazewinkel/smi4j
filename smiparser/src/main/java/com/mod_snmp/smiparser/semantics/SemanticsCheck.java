@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiParser.Semantics;
+package com.mod_snmp.smiparser.semantics;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * SemanticsCheck
@@ -7,12 +7,12 @@ package com.mod_snmp.SmiParser.Semantics;
  * The setup is mainly to insert all assignments in a symbol table.
  */
 
-import com.mod_snmp.SmiParser.ErrorHandler.ErrorException;
-import com.mod_snmp.SmiParser.ErrorHandler.Message;
-import com.mod_snmp.SmiParser.ErrorHandler.SmiException;
-import com.mod_snmp.SmiParser.SyntaxTree.*;
-import com.mod_snmp.SmiParser.Visitor.DepthFirstVisitor;
-import com.mod_snmp.SmiParser.Visitor.Visitor;
+import com.mod_snmp.smiparser.errorhandler.ErrorException;
+import com.mod_snmp.smiparser.errorhandler.Message;
+import com.mod_snmp.smiparser.errorhandler.SmiException;
+import com.mod_snmp.smiparser.syntaxtree.*;
+import com.mod_snmp.smiparser.visitor.DepthFirstVisitor;
+import com.mod_snmp.smiparser.visitor.Visitor;
 
 import java.util.Enumeration;
 

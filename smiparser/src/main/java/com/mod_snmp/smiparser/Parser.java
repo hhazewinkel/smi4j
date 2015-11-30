@@ -1,14 +1,14 @@
-package com.mod_snmp.SmiParser;
+package com.mod_snmp.smiparser;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.SmiParser.ErrorHandler.MessageList;
-import com.mod_snmp.SmiParser.ErrorHandler.SmiException;
-import com.mod_snmp.SmiParser.Grammar.ParseException;
-import com.mod_snmp.SmiParser.Grammar.SmiGrammar;
-import com.mod_snmp.SmiParser.MibTree.MibTree;
-import com.mod_snmp.SmiParser.Semantics.SemanticsCheck;
-import com.mod_snmp.SmiParser.Semantics.SemanticsSetup;
-import com.mod_snmp.SmiParser.SyntaxTree.NodeList;
+import com.mod_snmp.smiparser.errorhandler.MessageList;
+import com.mod_snmp.smiparser.errorhandler.SmiException;
+import com.mod_snmp.smiparser.grammar.ParseException;
+import com.mod_snmp.smiparser.grammar.SmiGrammar;
+import com.mod_snmp.smiparser.mibtree.MibTree;
+import com.mod_snmp.smiparser.semantics.SemanticsCheck;
+import com.mod_snmp.smiparser.semantics.SemanticsSetup;
+import com.mod_snmp.smiparser.syntaxtree.NodeList;
 import net.lisanza.CliArgs.ArgsException;
 
 import java.io.File;

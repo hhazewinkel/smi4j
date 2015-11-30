@@ -1,7 +1,7 @@
-package com.mod_snmp.SmiParser.ErrorHandler;
+package com.mod_snmp.smiparser.errorhandler;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.SmiParser.SyntaxTree.Node;
+import com.mod_snmp.smiparser.syntaxtree.Node;
 
 public class SmiException extends Exception implements SmiExceptionLevel {
     /**

@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiTools.Generators.Common;
+package com.mod_snmp.smitools.generators.common;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 import java.util.Hashtable;

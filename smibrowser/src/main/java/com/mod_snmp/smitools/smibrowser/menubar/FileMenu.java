@@ -1,14 +1,14 @@
-package com.mod_snmp.SmiTools.SmiBrowser.MenuBar;
+package com.mod_snmp.smitools.smibrowser.menubar;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * FileMenu
  * The class that defines the file menu.
  */
 
-import com.mod_snmp.SmiParser.ErrorHandler.SmiException;
-import com.mod_snmp.SmiParser.Parser;
-import com.mod_snmp.SmiTools.SmiBrowser.Common.RootFrame;
-import com.mod_snmp.SmiTools.SmiBrowser.SmiBrowser;
+import com.mod_snmp.smiparser.errorhandler.SmiException;
+import com.mod_snmp.smiparser.Parser;
+import com.mod_snmp.smitools.smibrowser.common.RootFrame;
+import com.mod_snmp.smitools.smibrowser.SmiBrowser;
 
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;

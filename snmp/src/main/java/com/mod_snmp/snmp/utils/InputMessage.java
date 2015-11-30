@@ -1,4 +1,4 @@
-package com.mod_snmp.Snmp.Utils;
+package com.mod_snmp.snmp.utils;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 import java.io.ByteArrayInputStream;
 

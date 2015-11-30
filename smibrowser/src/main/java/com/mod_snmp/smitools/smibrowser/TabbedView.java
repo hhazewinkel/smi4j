@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiTools.SmiBrowser;
+package com.mod_snmp.smitools.smibrowser;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * TabbedView

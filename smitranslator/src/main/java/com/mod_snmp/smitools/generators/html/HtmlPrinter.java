@@ -1,9 +1,9 @@
-package com.mod_snmp.SmiTools.Generators.Html;
+package com.mod_snmp.smitools.generators.html;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.SmiParser.SyntaxTree.*;
-import com.mod_snmp.SmiParser.Visitor.DepthFirstVisitor;
-import com.mod_snmp.SmiParser.Visitor.Visitor;
+import com.mod_snmp.smiparser.syntaxtree.*;
+import com.mod_snmp.smiparser.visitor.DepthFirstVisitor;
+import com.mod_snmp.smiparser.visitor.Visitor;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

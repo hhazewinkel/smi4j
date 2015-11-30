@@ -1,12 +1,12 @@
-package com.mod_snmp.Snmp.Tools;
+package com.mod_snmp.snmp.tools;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.Snmp.Manager.Arguments;
-import com.mod_snmp.Snmp.Manager.SnmpManager;
-import com.mod_snmp.Snmp.Protocol.SnmpMessageException;
-import com.mod_snmp.Snmp.Protocol.SnmpPdu;
-import com.mod_snmp.Snmp.Values.Varbind;
-import com.mod_snmp.Snmp.Values.VarbindList;
+import com.mod_snmp.snmp.manager.Arguments;
+import com.mod_snmp.snmp.manager.SnmpManager;
+import com.mod_snmp.snmp.protocol.SnmpMessageException;
+import com.mod_snmp.snmp.protocol.SnmpPdu;
+import com.mod_snmp.snmp.values.Varbind;
+import com.mod_snmp.snmp.values.VarbindList;
 
 import java.util.Enumeration;
 

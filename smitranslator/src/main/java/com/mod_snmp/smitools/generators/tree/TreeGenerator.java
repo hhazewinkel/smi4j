@@ -1,9 +1,9 @@
-package com.mod_snmp.SmiTools.Generators.Tree;
+package com.mod_snmp.smitools.generators.tree;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.SmiParser.SyntaxTree.NodeList;
-import com.mod_snmp.SmiTools.Generators.Common.GeneratorInterface;
-import com.mod_snmp.SmiTools.Generators.Generator;
+import com.mod_snmp.smiparser.syntaxtree.NodeList;
+import com.mod_snmp.smitools.generators.common.GeneratorInterface;
+import com.mod_snmp.smitools.generators.Generator;
 import net.lisanza.CliArgs.ArgsException;
 
 /**

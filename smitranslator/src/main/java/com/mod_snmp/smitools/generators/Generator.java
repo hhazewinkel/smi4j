@@ -1,11 +1,11 @@
-package com.mod_snmp.SmiTools.Generators;
+package com.mod_snmp.smitools.generators;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.SmiParser.ParserInputArgs;
-import com.mod_snmp.SmiTools.Generators.Common.GeneratorInterface;
-import com.mod_snmp.SmiTools.Generators.Html.HtmlGenerator;
-import com.mod_snmp.SmiTools.Generators.ManAppl.ManApplGenerator;
-import com.mod_snmp.SmiTools.Generators.Tree.TreeGenerator;
+import com.mod_snmp.smiparser.ParserInputArgs;
+import com.mod_snmp.smitools.generators.common.GeneratorInterface;
+import com.mod_snmp.smitools.generators.html.HtmlGenerator;
+import com.mod_snmp.smitools.generators.manappl.ManApplGenerator;
+import com.mod_snmp.smitools.generators.tree.TreeGenerator;
 import net.lisanza.CliArgs.ArgsException;
 
 

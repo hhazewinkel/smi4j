@@ -1,8 +1,8 @@
-package com.mod_snmp.SmiTools.Generators.Common;
+package com.mod_snmp.smitools.generators.common;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.SmiParser.SyntaxTree.Identifier;
-import com.mod_snmp.SmiParser.SyntaxTree.ModuleIdentifier;
+import com.mod_snmp.smiparser.syntaxtree.Identifier;
+import com.mod_snmp.smiparser.syntaxtree.ModuleIdentifier;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;

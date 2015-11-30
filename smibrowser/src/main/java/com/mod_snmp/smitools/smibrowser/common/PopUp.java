@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiTools.SmiBrowser.Common;
+package com.mod_snmp.smitools.smibrowser.common;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 import javax.swing.JFrame;

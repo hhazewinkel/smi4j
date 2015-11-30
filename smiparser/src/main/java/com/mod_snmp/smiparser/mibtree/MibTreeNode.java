@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiParser.MibTree;
+package com.mod_snmp.smiparser.mibtree;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * MibTreeNode
@@ -8,9 +8,9 @@ package com.mod_snmp.SmiParser.MibTree;
  */
 
 
-import com.mod_snmp.SmiParser.SyntaxTree.Identifier;
-import com.mod_snmp.SmiParser.SyntaxTree.ObjectInfo;
-import com.mod_snmp.SmiParser.SyntaxTree.ObjectInfoObjectType;
+import com.mod_snmp.smiparser.syntaxtree.Identifier;
+import com.mod_snmp.smiparser.syntaxtree.ObjectInfo;
+import com.mod_snmp.smiparser.syntaxtree.ObjectInfoObjectType;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 

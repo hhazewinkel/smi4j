@@ -1,14 +1,14 @@
-package com.mod_snmp.SmiParser.MibTree;
+package com.mod_snmp.smiparser.mibtree;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.SmiParser.ErrorHandler.Message;
-import com.mod_snmp.SmiParser.SyntaxTree.AssignedValue;
-import com.mod_snmp.SmiParser.SyntaxTree.AssignmentObject;
-import com.mod_snmp.SmiParser.SyntaxTree.NodeList;
-import com.mod_snmp.SmiParser.SyntaxTree.ObjectInfoObjectIdentifier;
-import com.mod_snmp.SmiParser.SyntaxTree.OidValue;
-import com.mod_snmp.SmiParser.Visitor.DepthFirstVisitor;
-import com.mod_snmp.SmiParser.Visitor.Visitor;
+import com.mod_snmp.smiparser.errorhandler.Message;
+import com.mod_snmp.smiparser.syntaxtree.AssignedValue;
+import com.mod_snmp.smiparser.syntaxtree.AssignmentObject;
+import com.mod_snmp.smiparser.syntaxtree.NodeList;
+import com.mod_snmp.smiparser.syntaxtree.ObjectInfoObjectIdentifier;
+import com.mod_snmp.smiparser.syntaxtree.OidValue;
+import com.mod_snmp.smiparser.visitor.DepthFirstVisitor;
+import com.mod_snmp.smiparser.visitor.Visitor;
 
 public class MibTree extends DepthFirstVisitor implements Visitor {
     static private boolean debug = false;

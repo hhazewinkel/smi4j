@@ -2,13 +2,13 @@
  * SmiBrowser.java
  * The top-level window from which all view and gui interactions are provided.
  */
-package com.mod_snmp.SmiTools.SmiBrowser;
+package com.mod_snmp.smitools.smibrowser;
 
-import com.mod_snmp.SmiParser.ErrorHandler.SmiException;
-import com.mod_snmp.SmiParser.Parser;
-import com.mod_snmp.SmiParser.ParserInputArgs;
-import com.mod_snmp.SmiTools.SmiBrowser.Common.RootFrame;
-import com.mod_snmp.SmiTools.SmiBrowser.MenuBar.MenuBar;
+import com.mod_snmp.smiparser.errorhandler.SmiException;
+import com.mod_snmp.smiparser.Parser;
+import com.mod_snmp.smiparser.ParserInputArgs;
+import com.mod_snmp.smitools.smibrowser.common.RootFrame;
+import com.mod_snmp.smitools.smibrowser.menubar.MenuBar;
 import net.lisanza.CliArgs.ArgsException;
 
 import javax.swing.JFrame;

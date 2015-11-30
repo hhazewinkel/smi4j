@@ -1,7 +1,7 @@
-package com.mod_snmp.Snmp.Protocol;
+package com.mod_snmp.snmp.protocol;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.Snmp.Utils.TypeConversions;
+import com.mod_snmp.snmp.utils.TypeConversions;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

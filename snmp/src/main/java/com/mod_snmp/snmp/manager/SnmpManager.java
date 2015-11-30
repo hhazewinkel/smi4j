@@ -1,16 +1,16 @@
-package com.mod_snmp.Snmp.Manager;
+package com.mod_snmp.snmp.manager;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.Snmp.Protocol.EngineId;
-import com.mod_snmp.Snmp.Protocol.SnmpEngine;
-import com.mod_snmp.Snmp.Protocol.SnmpEngineException;
-import com.mod_snmp.Snmp.Protocol.SnmpMessage;
-import com.mod_snmp.Snmp.Protocol.SnmpMessageException;
-import com.mod_snmp.Snmp.Protocol.SnmpPdu;
-import com.mod_snmp.Snmp.Protocol.SnmpSession;
-import com.mod_snmp.Snmp.Protocol.User;
-import com.mod_snmp.Snmp.Utils.ServiceAddress;
-import com.mod_snmp.Snmp.Values.VarbindList;
+import com.mod_snmp.snmp.protocol.EngineId;
+import com.mod_snmp.snmp.protocol.SnmpEngine;
+import com.mod_snmp.snmp.protocol.SnmpEngineException;
+import com.mod_snmp.snmp.protocol.SnmpMessage;
+import com.mod_snmp.snmp.protocol.SnmpMessageException;
+import com.mod_snmp.snmp.protocol.SnmpPdu;
+import com.mod_snmp.snmp.protocol.SnmpSession;
+import com.mod_snmp.snmp.protocol.User;
+import com.mod_snmp.snmp.utils.ServiceAddress;
+import com.mod_snmp.snmp.values.VarbindList;
 
 /**
  * The SnmpManager class is a wrapper around the SNMP protocol to abstract

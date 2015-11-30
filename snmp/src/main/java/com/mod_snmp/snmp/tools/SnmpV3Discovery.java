@@ -1,8 +1,8 @@
-package com.mod_snmp.Snmp.Tools;
+package com.mod_snmp.snmp.tools;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.Snmp.Manager.Arguments;
-import com.mod_snmp.Snmp.Manager.SnmpManager;
+import com.mod_snmp.snmp.manager.Arguments;
+import com.mod_snmp.snmp.manager.SnmpManager;
 
 /**
  * Retrieving the engine id of a remote SNMP agent.

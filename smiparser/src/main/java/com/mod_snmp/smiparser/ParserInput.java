@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiParser;
+package com.mod_snmp.smiparser;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 import java.util.Enumeration;

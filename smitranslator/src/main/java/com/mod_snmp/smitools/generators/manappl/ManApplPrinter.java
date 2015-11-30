@@ -1,15 +1,15 @@
-package com.mod_snmp.SmiTools.Generators.ManAppl;
+package com.mod_snmp.smitools.generators.manappl;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.SmiParser.ErrorHandler.ErrorException;
-import com.mod_snmp.SmiParser.ErrorHandler.SmiException;
-import com.mod_snmp.SmiParser.MibTree.MibTree;
-import com.mod_snmp.SmiParser.MibTree.MibTreeException;
-import com.mod_snmp.SmiParser.MibTree.MibTreeNode;
-import com.mod_snmp.SmiParser.Semantics.ModuleHashTable;
-import com.mod_snmp.SmiParser.Semantics.SymbolHashTable;
-import com.mod_snmp.SmiParser.SyntaxTree.*;
-import com.mod_snmp.SmiParser.Visitor.ObjectDepthFirst;
+import com.mod_snmp.smiparser.errorhandler.ErrorException;
+import com.mod_snmp.smiparser.errorhandler.SmiException;
+import com.mod_snmp.smiparser.mibtree.MibTree;
+import com.mod_snmp.smiparser.mibtree.MibTreeException;
+import com.mod_snmp.smiparser.mibtree.MibTreeNode;
+import com.mod_snmp.smiparser.semantics.ModuleHashTable;
+import com.mod_snmp.smiparser.semantics.SymbolHashTable;
+import com.mod_snmp.smiparser.syntaxtree.*;
+import com.mod_snmp.smiparser.visitor.ObjectDepthFirst;
 
 import java.io.File;
 import java.io.OutputStream;
@@ -215,8 +215,8 @@ public class ManApplPrinter extends ObjectDepthFirst {
             if (mtn.isScalar() || mtn.isTable()) {
                 out = ManApplWriter.create(packageName, moduleName, n.identifier);
                 out.println("package " + out.stripDots(packageName) + "." + moduleName + ";");
-                out.println("import com.mod_snmp.Snmp.Manager.*;");
-                out.println("import com.mod_snmp.Snmp.Protocol.*;");
+                out.println("import com.mod_snmp.snmp.manager.*;");
+                out.println("import com.mod_snmp.snmp.protocol.*;");
                 if (mtn.isScalar()) {
                     _ret=n.accept(new ManApplScalarPrinter(out), _ret);
                 } else if (mtn.isTable()) {

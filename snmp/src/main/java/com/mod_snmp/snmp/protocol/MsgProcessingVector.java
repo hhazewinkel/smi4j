@@ -1,4 +1,4 @@
-package com.mod_snmp.Snmp.Protocol;
+package com.mod_snmp.snmp.protocol;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * MsgProcessingVector.java
@@ -10,7 +10,7 @@ package com.mod_snmp.Snmp.Protocol;
  */
 
 
-import com.mod_snmp.Snmp.Utils.TypeConversions;
+import com.mod_snmp.snmp.utils.TypeConversions;
 
 import java.net.DatagramPacket;
 import java.util.Vector;
@@ -72,7 +72,7 @@ public class MsgProcessingVector extends Vector {
      * encoding a message into the on-the-wire format.
      * @param msg the message to be encoded.
      * @return The encoded message in DatagramPacket format, ready to send.
-     * @see com.mod_snmp.Snmp.Protocol.SnmpMessage
+     * @see com.mod_snmp.snmp.protocol.SnmpMessage
      */
     public DatagramPacket encode(SnmpMessage msg)
                                                 throws SnmpMessageException {

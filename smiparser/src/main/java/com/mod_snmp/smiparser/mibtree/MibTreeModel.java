@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiParser.MibTree;
+package com.mod_snmp.smiparser.mibtree;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 import javax.swing.tree.DefaultTreeModel;

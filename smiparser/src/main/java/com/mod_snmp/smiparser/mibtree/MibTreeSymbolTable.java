@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiParser.MibTree;
+package com.mod_snmp.smiparser.mibtree;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * MibTreeSymbolTable
@@ -8,7 +8,7 @@ package com.mod_snmp.SmiParser.MibTree;
  */
 
 
-import com.mod_snmp.SmiParser.SyntaxTree.Identifier;
+import com.mod_snmp.smiparser.syntaxtree.Identifier;
 
 import java.util.Hashtable;
 

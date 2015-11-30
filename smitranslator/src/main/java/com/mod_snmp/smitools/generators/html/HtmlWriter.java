@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiTools.Generators.Html;
+package com.mod_snmp.smitools.generators.html;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * HtmlWriter
@@ -7,11 +7,11 @@ package com.mod_snmp.SmiTools.Generators.Html;
  */
 
 
-import com.mod_snmp.SmiParser.SyntaxTree.Identifier;
-import com.mod_snmp.SmiParser.SyntaxTree.ModuleIdentifier;
-import com.mod_snmp.SmiParser.SyntaxTree.NodeList;
-import com.mod_snmp.SmiParser.SyntaxTree.NodeToken;
-import com.mod_snmp.SmiParser.SyntaxTree.NumericValue;
+import com.mod_snmp.smiparser.syntaxtree.Identifier;
+import com.mod_snmp.smiparser.syntaxtree.ModuleIdentifier;
+import com.mod_snmp.smiparser.syntaxtree.NodeList;
+import com.mod_snmp.smiparser.syntaxtree.NodeToken;
+import com.mod_snmp.smiparser.syntaxtree.NumericValue;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;

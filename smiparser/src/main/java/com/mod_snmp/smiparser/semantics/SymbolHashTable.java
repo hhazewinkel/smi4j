@@ -1,13 +1,13 @@
-package com.mod_snmp.SmiParser.Semantics;
+package com.mod_snmp.smiparser.semantics;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.SmiParser.ErrorHandler.ErrorException;
-import com.mod_snmp.SmiParser.SyntaxTree.Assignment;
-import com.mod_snmp.SmiParser.SyntaxTree.Identifier;
-import com.mod_snmp.SmiParser.SyntaxTree.ModuleDefinition;
-import com.mod_snmp.SmiParser.SyntaxTree.ModuleIdentifier;
-import com.mod_snmp.SmiParser.SyntaxTree.Node;
-import com.mod_snmp.SmiParser.SyntaxTree.Type;
+import com.mod_snmp.smiparser.errorhandler.ErrorException;
+import com.mod_snmp.smiparser.syntaxtree.Assignment;
+import com.mod_snmp.smiparser.syntaxtree.Identifier;
+import com.mod_snmp.smiparser.syntaxtree.ModuleDefinition;
+import com.mod_snmp.smiparser.syntaxtree.ModuleIdentifier;
+import com.mod_snmp.smiparser.syntaxtree.Node;
+import com.mod_snmp.smiparser.syntaxtree.Type;
 
 import java.util.Hashtable;
 

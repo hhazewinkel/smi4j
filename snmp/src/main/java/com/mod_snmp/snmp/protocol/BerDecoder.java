@@ -1,23 +1,23 @@
-package com.mod_snmp.Snmp.Protocol;
+package com.mod_snmp.snmp.protocol;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import com.mod_snmp.Snmp.Utils.TypeConversions;
-import com.mod_snmp.Snmp.Values.SnmpBitStr;
-import com.mod_snmp.Snmp.Values.SnmpCounter32;
-import com.mod_snmp.Snmp.Values.SnmpCounter64;
-import com.mod_snmp.Snmp.Values.SnmpInteger;
-import com.mod_snmp.Snmp.Values.SnmpIpAddress;
-import com.mod_snmp.Snmp.Values.SnmpNsap;
-import com.mod_snmp.Snmp.Values.SnmpNull;
-import com.mod_snmp.Snmp.Values.SnmpObjectId;
-import com.mod_snmp.Snmp.Values.SnmpOctetStr;
-import com.mod_snmp.Snmp.Values.SnmpOpaque;
-import com.mod_snmp.Snmp.Values.SnmpTimeTicks;
-import com.mod_snmp.Snmp.Values.SnmpUnsigned32;
-import com.mod_snmp.Snmp.Values.SnmpValue;
-import com.mod_snmp.Snmp.Values.SnmpValueException;
-import com.mod_snmp.Snmp.Values.Varbind;
-import com.mod_snmp.Snmp.Values.VarbindList;
+import com.mod_snmp.snmp.utils.TypeConversions;
+import com.mod_snmp.snmp.values.SnmpBitStr;
+import com.mod_snmp.snmp.values.SnmpCounter32;
+import com.mod_snmp.snmp.values.SnmpCounter64;
+import com.mod_snmp.snmp.values.SnmpInteger;
+import com.mod_snmp.snmp.values.SnmpIpAddress;
+import com.mod_snmp.snmp.values.SnmpNsap;
+import com.mod_snmp.snmp.values.SnmpNull;
+import com.mod_snmp.snmp.values.SnmpObjectId;
+import com.mod_snmp.snmp.values.SnmpOctetStr;
+import com.mod_snmp.snmp.values.SnmpOpaque;
+import com.mod_snmp.snmp.values.SnmpTimeTicks;
+import com.mod_snmp.snmp.values.SnmpUnsigned32;
+import com.mod_snmp.snmp.values.SnmpValue;
+import com.mod_snmp.snmp.values.SnmpValueException;
+import com.mod_snmp.snmp.values.Varbind;
+import com.mod_snmp.snmp.values.VarbindList;
 
 import java.io.ByteArrayInputStream;
 import java.util.Vector;

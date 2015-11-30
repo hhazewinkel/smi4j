@@ -1,4 +1,4 @@
-package com.mod_snmp.SmiTools.SmiBrowser;
+package com.mod_snmp.smitools.smibrowser;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * ObjectInfoView
@@ -6,8 +6,8 @@ package com.mod_snmp.SmiTools.SmiBrowser;
  * selected object of the tree view.
  */
 
-import com.mod_snmp.SmiParser.MibTree.MibTreeNode;
-import com.mod_snmp.SmiParser.SyntaxTree.ObjectInfo;
+import com.mod_snmp.smiparser.mibtree.MibTreeNode;
+import com.mod_snmp.smiparser.syntaxtree.ObjectInfo;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;

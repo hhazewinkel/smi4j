@@ -1,9 +1,9 @@
-package com.mod_snmp.SmiTools.SmiBrowser;
+package com.mod_snmp.smitools.smibrowser;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
 
-import com.mod_snmp.SmiParser.SyntaxTree.*;
-import com.mod_snmp.SmiParser.Visitor.DepthFirstVisitor;
+import com.mod_snmp.smiparser.syntaxtree.*;
+import com.mod_snmp.smiparser.visitor.DepthFirstVisitor;
 
 public class ObjectInfoVisitor extends DepthFirstVisitor {
     ObjectInfoView view;

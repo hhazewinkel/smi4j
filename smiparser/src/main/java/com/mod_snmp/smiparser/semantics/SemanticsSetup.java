@@ -1,16 +1,16 @@
-package com.mod_snmp.SmiParser.Semantics;
+package com.mod_snmp.smiparser.semantics;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 /**
  * SemanticsSetup
  * Class that walks thru the syntaxtree to setup semantical checking.
  */
 
-import com.mod_snmp.SmiParser.ErrorHandler.ErrorException;
-import com.mod_snmp.SmiParser.ErrorHandler.Message;
-import com.mod_snmp.SmiParser.ErrorHandler.SmiException;
-import com.mod_snmp.SmiParser.SyntaxTree.*;
-import com.mod_snmp.SmiParser.Visitor.DepthFirstVisitor;
-import com.mod_snmp.SmiParser.Visitor.Visitor;
+import com.mod_snmp.smiparser.errorhandler.ErrorException;
+import com.mod_snmp.smiparser.errorhandler.Message;
+import com.mod_snmp.smiparser.errorhandler.SmiException;
+import com.mod_snmp.smiparser.syntaxtree.*;
+import com.mod_snmp.smiparser.visitor.DepthFirstVisitor;
+import com.mod_snmp.smiparser.visitor.Visitor;
 
 import java.util.Enumeration;
 
