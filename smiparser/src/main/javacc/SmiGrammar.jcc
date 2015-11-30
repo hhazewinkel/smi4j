@@ -6,12 +6,12 @@
 
 PARSER_BEGIN(SmiGrammar)
 
-package com.mod_snmp.SmiParser.Grammar;
+package com.mod_snmp.smiparser.grammar;
 
 import java.io.*;
 import java.util.*;
-import com.mod_snmp.SmiParser.SyntaxTree.*;
-import com.mod_snmp.SmiParser.ErrorHandler.*;
+import com.mod_snmp.smiparser.syntaxtree.*;
+import com.mod_snmp.smiparser.errorhandler.*;
 
 
 public class SmiGrammar 

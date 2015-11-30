@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="1.4.0" class="java.beans.XMLDecoder">
+    <object class="com.mod_snmp.smitools.generators.GeneratorConf">
+        <void property="generators">
+            <array class="com.mod_snmp.smitools.generators.common.GeneratorInterface" length="3">
+                <void index="0">
+                    <object class="com.mod_snmp.smitools.generators.html.HtmlGenerator"></object>
+                </void>
+                <void index="1">
+                    <object class="com.mod_snmp.smitools.generators.tree.TreeGenerator"></object>
+                </void>
+                <void index="2">
+                    <object class="com.mod_snmp.smitools.generators.manappl.ManApplGenerator"></object>
+                </void>
+            </array>
+        </void>
+    </object>
+</java>
