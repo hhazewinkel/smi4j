@@ -9,10 +9,10 @@ import com.mod_snmp.snmp.protocol.UserException;
 import com.mod_snmp.snmp.utils.ServiceAddress;
 import com.mod_snmp.snmp.values.SnmpValueException;
 import com.mod_snmp.snmp.values.VarbindList;
-import net.lisanza.CliArgs.ArgsException;
-import net.lisanza.CliArgs.ArgsHandlerInterface;
-import net.lisanza.CliArgs.ArgsReader;
-import net.lisanza.CliArgs.SubArgsReader;
+import net.lisanza.cliargs.ArgsException;
+import net.lisanza.cliargs.ArgsHandlerInterface;
+import net.lisanza.cliargs.ArgsReader;
+import net.lisanza.cliargs.SubArgsReader;
 
 import java.net.UnknownHostException;
 import java.util.Enumeration;

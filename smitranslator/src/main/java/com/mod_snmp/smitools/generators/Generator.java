@@ -6,7 +6,7 @@ import com.mod_snmp.smitools.generators.common.GeneratorInterface;
 import com.mod_snmp.smitools.generators.html.HtmlGenerator;
 import com.mod_snmp.smitools.generators.manappl.ManApplGenerator;
 import com.mod_snmp.smitools.generators.tree.TreeGenerator;
-import net.lisanza.CliArgs.ArgsException;
+import net.lisanza.cliargs.ArgsException;
 
 
 public class Generator extends ParserInputArgs {

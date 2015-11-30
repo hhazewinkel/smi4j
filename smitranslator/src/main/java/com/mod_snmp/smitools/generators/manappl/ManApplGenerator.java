@@ -5,7 +5,7 @@ import com.mod_snmp.smiparser.syntaxtree.ModuleDefinition;
 import com.mod_snmp.smiparser.syntaxtree.NodeList;
 import com.mod_snmp.smitools.generators.common.GeneratorInterface;
 import com.mod_snmp.smitools.generators.Generator;
-import net.lisanza.CliArgs.ArgsException;
+import net.lisanza.cliargs.ArgsException;
 
 import java.io.File;
 import java.io.FileNotFoundException;

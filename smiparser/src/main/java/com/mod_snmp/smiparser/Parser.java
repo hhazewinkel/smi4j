@@ -9,7 +9,7 @@ import com.mod_snmp.smiparser.mibtree.MibTree;
 import com.mod_snmp.smiparser.semantics.SemanticsCheck;
 import com.mod_snmp.smiparser.semantics.SemanticsSetup;
 import com.mod_snmp.smiparser.syntaxtree.NodeList;
-import net.lisanza.CliArgs.ArgsException;
+import net.lisanza.cliargs.ArgsException;
 
 import java.io.File;
 import java.io.FileInputStream;

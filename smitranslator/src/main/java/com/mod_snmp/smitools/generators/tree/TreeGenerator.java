@@ -4,7 +4,7 @@ package com.mod_snmp.smitools.generators.tree;
 import com.mod_snmp.smiparser.syntaxtree.NodeList;
 import com.mod_snmp.smitools.generators.common.GeneratorInterface;
 import com.mod_snmp.smitools.generators.Generator;
-import net.lisanza.CliArgs.ArgsException;
+import net.lisanza.cliargs.ArgsException;
 
 /**
  * Handler for the CLI options that are added for tasks.

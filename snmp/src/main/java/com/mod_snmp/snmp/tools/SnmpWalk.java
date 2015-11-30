@@ -9,7 +9,7 @@ import com.mod_snmp.snmp.protocol.SnmpPdu;
 import com.mod_snmp.snmp.values.SnmpValueException;
 import com.mod_snmp.snmp.values.Varbind;
 import com.mod_snmp.snmp.values.VarbindList;
-import net.lisanza.CliArgs.ArgsException;
+import net.lisanza.cliargs.ArgsException;
 
 /**
  * Retrieving all managed instances of an remote SNMP agent.

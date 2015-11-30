@@ -1,9 +1,9 @@
 package com.mod_snmp.smiparser;
 /* Copyright 2000-2013 Harrie Hazewinkel. All rights reserved.*/
 
-import net.lisanza.CliArgs.ArgsException;
-import net.lisanza.CliArgs.ArgsHandlerInterface;
-import net.lisanza.CliArgs.ArgsReader;
+import net.lisanza.cliargs.ArgsException;
+import net.lisanza.cliargs.ArgsHandlerInterface;
+import net.lisanza.cliargs.ArgsReader;
 
 import java.util.Enumeration;
 

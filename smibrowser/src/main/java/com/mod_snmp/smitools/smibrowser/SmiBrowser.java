@@ -9,7 +9,7 @@ import com.mod_snmp.smiparser.Parser;
 import com.mod_snmp.smiparser.ParserInputArgs;
 import com.mod_snmp.smitools.smibrowser.common.RootFrame;
 import com.mod_snmp.smitools.smibrowser.menubar.MenuBar;
-import net.lisanza.CliArgs.ArgsException;
+import net.lisanza.cliargs.ArgsException;
 
 import javax.swing.JFrame;
 import java.awt.Dimension;
